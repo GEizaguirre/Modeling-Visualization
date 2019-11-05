@@ -12,30 +12,30 @@ import static cat.urv.deim.miv.Application.GL_MODELVIEW;
 import static cat.urv.deim.miv.Application.GL_PROJECTION;
 
 public class MyOpenGL {
-    private final int MATRIX_SIZE = 4;
-    private int angle;
-    private float[][] currentMatrix;
-    private float[][] projectionMatrix = new float[MATRIX_SIZE][MATRIX_SIZE];
-    private float[][] modelviewMatrix = new float[MATRIX_SIZE][MATRIX_SIZE];
-    private Stack <float[][]> projectionStack = new Stack<>();
-    private Stack <float[][]> modelviewStack = new Stack<>();
-    private int currentMatrixType;
-    private int lowerleftX = 0;
-    private int lowerleftY = 0;
-    private int viewportWidth;
-    private int viewportHeight;
-    private ArrayList<float[]> currentVertex;
-    private int windowWidth;
-    private int windowHeight;
+    private static final int MATRIX_SIZE = 4;
+    private static int angle;
+    private static float[][] currentMatrix;
+    private static float[][] projectionMatrix = new float[MATRIX_SIZE][MATRIX_SIZE];
+    private static float[][] modelviewMatrix = new float[MATRIX_SIZE][MATRIX_SIZE];
+    private static Stack <float[][]> projectionStack = new Stack<>();
+    private static Stack <float[][]> modelviewStack = new Stack<>();
+    private static int currentMatrixType;
+    private static int lowerleftX = 0;
+    private static int lowerleftY = 0;
+    private static int viewportWidth;
+    private static int viewportHeight;
+    private static ArrayList<float[]> currentVertex;
+    private static int windowWidth;
+    private static int windowHeight;
 
     public MyOpenGL() {
     }
 
-    public int getAngle() {
+    public static int getAngle() {
         return angle;
     }
     
-    public float[][] pushProjection () {
+    public static float[][] pushProjection () {
     	float[][] newProj = new float[MATRIX_SIZE][MATRIX_SIZE];
     	for (int i=0; i<MATRIX_SIZE; i++) {
     		for (int j=0; j<MATRIX_SIZE; j++) {
@@ -45,7 +45,7 @@ public class MyOpenGL {
     	return projectionStack.push(newProj);
     }
     
-    public float[][] pushViewmodel () {
+    public static float[][] pushViewmodel () {
     	float[][] newModel = new float[MATRIX_SIZE][MATRIX_SIZE];
     	for (int i=0; i<MATRIX_SIZE; i++) {
     		for (int j=0; j<MATRIX_SIZE; j++) {
@@ -55,7 +55,7 @@ public class MyOpenGL {
     	return modelviewStack.push(newModel);
     }
     
-    public void popProjection () {
+    public static void popProjection () {
     	float[][] newProj = projectionStack.pop();
     	for (int i=0; i<MATRIX_SIZE; i++) {
     		for (int j=0; j<MATRIX_SIZE; j++) {
@@ -64,7 +64,7 @@ public class MyOpenGL {
     	}
     }
     
-    public void popViewmodel () {
+    public static void popViewmodel () {
     	float[][] newModel = modelviewStack.pop();
     	for (int i=0; i<MATRIX_SIZE; i++) {
     		for (int j=0; j<MATRIX_SIZE; j++) {
@@ -73,15 +73,15 @@ public class MyOpenGL {
     	}
     }
 
-    public void setAngle(int angle) {
-        this.angle = angle;
+    public static void setAngle(int ng) {
+        angle = ng;
     }
 
-    public float[][] getCurrentMatrix() {
+    public static float[][] getCurrentMatrix() {
         return currentMatrix;
     }
 
-    public void setCurrentMatrix(int model) {
+    public static void setCurrentMatrix(int model) {
         switch (model){
             case GL_MODELVIEW:
                 currentMatrix = modelviewMatrix; break;
@@ -91,164 +91,150 @@ public class MyOpenGL {
         currentMatrixType = model;
     }
 
-    public float[][] getProjectionMatrix() {
+    public static float[][] getProjectionMatrix() {
         return projectionMatrix;
     }
 
-    public void setProjectionMatrix(float[][] projectionMatrix) {
+    public static void setProjectionMatrix(float[][] pMatrix) {
         for (int i = 0; i < MATRIX_SIZE; i++) {
             for (int j = 0; j < MATRIX_SIZE; j++) {
-                this.projectionMatrix[i][j] = projectionMatrix[i][j];
+                projectionMatrix[i][j] = pMatrix[i][j];
             }
         }
-        //System.out.println("Projection matrix:");
-        //printMatrix(this.projectionMatrix);
     }
 
-    public float[][] getModelviewMatrix() {
+    public static float[][] getModelviewMatrix() {
         return modelviewMatrix;
     }
 
-    public void setModelviewMatrix(float[][] modelviewMatrix) {
+    public static void setModelviewMatrix(float[][] mMatrix) {
         for (int i = 0; i < MATRIX_SIZE; i++) {
             for (int j = 0; j < MATRIX_SIZE; j++) {
-                this.modelviewMatrix[i][j] = modelviewMatrix[i][j];
+                modelviewMatrix[i][j] = mMatrix[i][j];
             }
         }
     }
 
-    public int getLowerleftX() {
+    public static int getLowerleftX() {
         return lowerleftX;
     }
 
-    public void setLowerleftX(int lowerleftX) {
-        this.lowerleftX = lowerleftX;
+    public static void setLowerleftX(int lleftX) {
+        lowerleftX = lleftX;
     }
 
-    public int getLowerleftY() {
+    public static int getLowerleftY() {
         return lowerleftY;
     }
 
-    public void setCurrentMatrix(float[][] currentMatrix) {
-        this.currentMatrix = currentMatrix;
+    public static void setCurrentMatrix(float[][] cMatrix) {
+        currentMatrix = cMatrix;
     }
 
-    public int getCurrentMatrixType() {
+    public static int getCurrentMatrixType() {
         return currentMatrixType;
     }
 
-    public void setCurrentMatrixType(int currentMatrixType) {
-        this.currentMatrixType = currentMatrixType;
+    public static void setCurrentMatrixType(int cMatrixType) {
+        currentMatrixType = cMatrixType;
     }
 
-    public void setLowerleftY(int lowerleftY) {
-        this.lowerleftY = lowerleftY;
+    public static void setLowerleftY(int lleftY) {
+        lowerleftY = lleftY;
     }
 
-    public int getViewportWidth() {
+    public static int getViewportWidth() {
         return viewportWidth;
     }
 
-    public void setViewportWidth(int viewportWidth) {
-        this.viewportWidth = viewportWidth;
+    public static void setViewportWidth(int vWidth) {
+        viewportWidth = vWidth;
     }
 
-    public int getViewportHeight() {
+    public static int getViewportHeight() {
         return viewportHeight;
     }
 
-    public void setViewportHeight(int viewportHeight) {
-        this.viewportHeight = viewportHeight;
+    public static void setViewportHeight(int vHeight) {
+        viewportHeight = vHeight;
     }
 
-    public void initVertex() {
+    public static void initVertex() {
         currentVertex = new ArrayList<>();
     }
 
-    public void addVertex(float[] coord) {
-    	/*for (float f: coord) System.out.print(" "+f);
-    	System.out.println();*/
+    public static void addVertex(float[] coord) {
+
     	float[] aux_coord = new float[MATRIX_SIZE];
-    	//System.out.println("added");
+    	if (coord[MATRIX_SIZE-1] == 0) {
+    		System.out.println ("ERROR :: Invalid value, homogene coordinate can not be 0");
+    		System.exit(-1);
+    	}
+ 
     	//Get
         if (currentVertex != null) {
         	
         	// Generate coordinates.
-        	//System.out.println("first");
             for (int i = 0; i < MATRIX_SIZE; i++) {
                 aux_coord[i] = 0;
                 for (int j = 0; j < MATRIX_SIZE; j++) {
                     aux_coord[i] = aux_coord[i] + modelviewMatrix[i][j] * coord[j];
                 }
-                //System.out.print(" "+aux_coord[i]);
-
             }
-            /*System.out.println("second");
-            printMatrix(projectionMatrix);*/
+
             for (int i = 0; i < MATRIX_SIZE; i++) {
                 coord[i] = 0;
                 for (int j = 0; j < MATRIX_SIZE; j++) {
                     coord[i] = coord[i] + projectionMatrix[i][j] * aux_coord[j];
                 }
-                //System.out.print(" "+coord[i]);
             }
+        
+        	currentVertex.add(coord);	
         	
-            // Normalize coordinates.
-            //System.out.println("normalization");
-            if (coord[MATRIX_SIZE-1] != 0) {
-	            for (int i=0; i < MATRIX_SIZE; i++) {
-	            	coord[i] = coord[i]/coord[MATRIX_SIZE-1];
-	            	//System.out.print(" "+coord[i]);
-	            	//System.out.println();
-	            }
-	            // Get window coordinates.
-	        	if (coord[0] >= 0) coord[0] = windowWidth/2 + coord[0]*windowWidth/2;
-	        	else coord[0] = windowWidth/2*(1-Math.abs(coord[0]));
-	        	
-	        	if (coord[1] >= 0) coord[1] = windowHeight/2 + coord[1]*windowHeight/2;
-	        	else coord[1] = windowHeight/2*(1-Math.abs(coord[1]));
-            } else for (int i=0; i < MATRIX_SIZE; i++) coord[i]=Integer.MAX_VALUE;
-        	
-        	currentVertex.add(coord);
-        	
-        	
-        } else System.out.println("Did not call glBegin");
+        } else System.out.println("ERROR :: Did not call glBegin first.");
     }
 
-    public Integer[] getDrawVertex() {
-    	
-    	/*System.out.println("Projection");
-    	printMatrix(projectionMatrix);
-    	System.out.println("Modelview");
-    	printMatrix(modelviewMatrix);*/
+    public static Integer[] getDrawVertex() {
+
         if (currentVertex == null) {
             // FIXME: generate GL_INVALID_OPERATION
-            System.out.println("glBegin must be called first.");
+            System.out.println("ERROR :: glBegin must be called first.");
             return null;
         } else if (currentVertex.size() < 2) {
-            System.out.println("Add at least 2 vertex");
+            System.out.println("ERROR :: Add at least 2 vertex.");
             return null;
         } else {
         		// Generate window coordinates and apply Newport transformation.
                 for (float[] cd: currentVertex) {
-                    //System.out.print(" "+new_coords[i]);
+                	
+                	if (cd[MATRIX_SIZE-1] != 0) {
+                    	// Normalize coordinates.
+        	            for (int i=0; i < MATRIX_SIZE; i++) {
+        	            	cd[i] = cd[i]/cd[MATRIX_SIZE-1];
+        	            }
+        	            // Get window coordinates        	            
+        	            if ((windowWidth==0) || (windowHeight==0)) System.out.println("WARNING :: Viewport may not be sspecified");
+        	        	
+        	            if (cd[0] >= 0) cd[0] = windowWidth/2 + cd[0]*windowWidth/2 ;
+        	        	else cd[0] = windowWidth/2*(1-Math.abs(cd[0])) -1;
+        	        	
+        	        	if (cd[1] >= 0) cd[1] = windowHeight/2 + cd[1]*windowHeight/2+1;
+        	        	else cd[1] = windowHeight/2*(1-Math.abs(cd[1]))+1;
+        	        	
+                    } else for (int i=0; i < MATRIX_SIZE; i++) cd[i]=Integer.MAX_VALUE;
+                    
                 	for (int i=0; i<MATRIX_SIZE; i++) {
 	                    if (i == 0) {
 	                    	// Viewport transformation.
 	                    	cd[i] = lowerleftX + (cd[i]) * (viewportWidth-lowerleftX)/windowWidth;
-	                    }
-	                    else if (i == 1) {
-	                    	
+	                    } else if (i == 1) {	            
 	                    	// Viewport transformation.
 	                    	cd[i] = lowerleftY + (cd[i]) * (viewportHeight-lowerleftX)/windowHeight;
 	                    }
-	                    //System.out.print(" "+new_coords[i]);
                 	}
-                    //System.out.println(coords[i]);
-                    //System.out.print("->"+coords[i]);
+
                   
             }
-            //System.out.println();
             Integer [] coords = new Integer [(MATRIX_SIZE-2)*currentVertex.size()];
             int counter =0;
             for (float[] cs: currentVertex) {
@@ -257,20 +243,18 @@ public class MyOpenGL {
             		counter++;
             	}
             }
-            this.currentVertex = null;
-            //for (Integer c: coords) System.out.print(c+" ");
-            //System.out.println();
+            currentVertex = null;
             return coords;
         }
     }
     
-    public void startVertex() {
-    	this.currentVertex=new ArrayList<>();
+    public static void startVertex() {
+    	currentVertex=new ArrayList<>();
     }
     
     
     //TODO REMOVE THESE FUNCTIONS
-    public void printMatrix(float[][] matrix) {
+    public static void printMatrix(float[][] matrix) {
     	for (int i=0; i<MATRIX_SIZE; i++) {
     		for (int j=0; j<MATRIX_SIZE; j++) {
     			System.out.print(" "+matrix[i][j]);
@@ -279,15 +263,15 @@ public class MyOpenGL {
     	}
     }
     
-    public void setWindowWidth(int w) {
-    	this.windowWidth = w;
+    public static void setWindowWidth(int w) {
+    	windowWidth = w;
     }
     
-    public void setWindowHeight(int h) {
-    	this.windowHeight = h;
+    public static void setWindowHeight(int h) {
+    	windowHeight = h;
     }
 
-    public void mulMatrix(float[][] mat1, float[][] mat2, float[][] destination) {
+    public static void mulMatrix(float[][] mat1, float[][] mat2, float[][] destination) {
     	float value;
     	for (int i = 0; i < MATRIX_SIZE; i++) {
             for (int j = 0; j < MATRIX_SIZE; j++) {
@@ -300,7 +284,7 @@ public class MyOpenGL {
         }
     }
     
-    public float[][] mulMatrix(float[][] mat1, float[][] mat2) {
+    public static float[][] mulMatrix(float[][] mat1, float[][] mat2) {
     	float[][] destination =new float[MATRIX_SIZE][MATRIX_SIZE];
     	float value;
     	for (int i = 0; i < MATRIX_SIZE; i++) {
@@ -314,6 +298,4 @@ public class MyOpenGL {
         }
     	return destination;
     }
-
-
 }

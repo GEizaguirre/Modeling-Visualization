@@ -9,8 +9,8 @@ public class Laboratori3 extends Application {
     public static final long serialVersionUID = 1L;
 
     private int angle;
-
-    private MyOpenGL myOpenGL = new MyOpenGL ();
+    private boolean up=true;
+    private float scaleCounter = 0;
 
     public Laboratori3() {
         super("Laboratori 3");
@@ -29,12 +29,8 @@ public class Laboratori3 extends Application {
     	//640x327
         int width = getPanelWidth();
         int height = getPanelHeight();
-        
-        
-        //System.out.println("width: "+width+", height: "+height);
-        float aspect = width / (float) height;
 
-        //System.out.println("start");
+        float aspect = width / (float) height;
         glViewport(0, 0, width, height);
 
         setColor(1.0f, 0.0f, 0.0f);
@@ -42,40 +38,57 @@ public class Laboratori3 extends Application {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         // Parallel projection.
-        //gluPerspective(30.0f, aspect, 0.1f, 1000.0f);
+        gluPerspective(30.0f, aspect, 0.1f, 1000.0f);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        //glTranslatef(0.0f, 0.0f, -3.0f);
+        glTranslatef(0.0f, 0.0f, -3.0f);
         
 
-        /*glPushMatrix();
+        glPushMatrix();
         int midAngle = angle % 200;
         if (midAngle > 100)
             midAngle = 200 - midAngle;
         glTranslatef(0.0f, 0.0f, midAngle * -0.1f);
         setColor(0.0f, 1.0f, 0.0f);
         drawRectangle();
-        //System.out.println("end");
-        glPopMatrix();*/
+        glPopMatrix();
 
+		glPushMatrix();
+		/*if (scaleCounter<100) glScalef((0.5f*scaleCounter),0, 0);
+		else glScalef(-(0.5f*scaleCounter),0f, 0f);*/
+		glTranslatef( -1.0f, 0.0f, 0.0f);
+		glScalef(-0.5f, -0.5f, 0f);
+		glScalef(scaleCounter, scaleCounter, 0f);
+		setColor(0.7f, 0.3f, 1.0f);
+		drawRectangle();
+		glPopMatrix();
+		
+        
         glRotatef(angle, 0.0f, 1.0f, 0.0f);
 
-		//glPushMatrix();
-		//glRotatef(angle, 0.0f, 0.0f, 1.0f);
+		glPushMatrix();
+		glRotatef(angle, 0.0f, 0.0f, 1.0f);
 		glTranslatef(-2.0f, 0.0f, 0.0f);
 		setColor(1.0f, 0.0f, 0.0f);
 		drawRectangle();
-		//glPopMatrix();
+		glPopMatrix();
 
-		/*glPushMatrix();
+		glPushMatrix();
 		glRotatef(2.0f * angle, 0.0f, 0.0f, 1.0f);
 		glTranslatef( 1.0f, 0.0f, 0.0f);
 		setColor(0.0f, 0.0f, 1.0f);
 		drawRectangle();
-		glPopMatrix();*/
+		glPopMatrix();
+		
 
+		
         angle += 5.0f;
+        if (scaleCounter>1.5) up =false;
+        if (scaleCounter<0) up = true;
+        if (up) scaleCounter = scaleCounter+0.05f;
+        else scaleCounter = scaleCounter-0.05f;
+        System.out.println(scaleCounter);
     }
 
 
@@ -88,9 +101,9 @@ public class Laboratori3 extends Application {
         // TODO: has de ficar aqui el codi!
         switch(model) {
             case GL_MODELVIEW:
-                myOpenGL.setCurrentMatrix(GL_MODELVIEW); break;
+                MyOpenGL.setCurrentMatrix(GL_MODELVIEW); break;
             case GL_PROJECTION:
-                myOpenGL.setCurrentMatrix(GL_PROJECTION); break;
+                MyOpenGL.setCurrentMatrix(GL_PROJECTION); break;
         }
     }
 
@@ -101,16 +114,17 @@ public class Laboratori3 extends Application {
             System.out.println("GL_INVALID_VALUE");
         }
         // Specify lower left corner.
-        myOpenGL.setLowerleftX(x);
-        myOpenGL.setLowerleftY(y);
-        myOpenGL.setViewportHeight(height);
-        myOpenGL.setViewportWidth(width);
+        MyOpenGL.setLowerleftX(x);
+        MyOpenGL.setLowerleftY(y);
+        MyOpenGL.setViewportHeight(height);
+        MyOpenGL.setViewportWidth(width);
         
         
     }
 
     public void defineGluPerspective(float fovy, float aspect, float zNear, float zFar) {
         // TODO: has de ficar aqui el codi!
+    	fovy = (float) Math.toRadians(fovy);
     	float f = 1/(float)Math.tan(fovy/2);
     	float [][] perspectiveMatrix = new float [][] {
     		
@@ -120,12 +134,11 @@ public class Laboratori3 extends Application {
     		{0f, 0f, -1, 0f}
     	};
     	
-        switch (myOpenGL.getCurrentMatrixType()){
+        switch (MyOpenGL.getCurrentMatrixType()){
         case GL_MODELVIEW:
-            myOpenGL.setModelviewMatrix(myOpenGL.mulMatrix(myOpenGL.getModelviewMatrix(), perspectiveMatrix)); break;
+            MyOpenGL.setModelviewMatrix(MyOpenGL.mulMatrix(MyOpenGL.getModelviewMatrix(), perspectiveMatrix)); break;
         case GL_PROJECTION:
-        	//myOpenGL.printMatrix(myOpenGL.mulMatrix(myOpenGL.getProjectionMatrix(), perspectiveMatrix));
-            myOpenGL.setProjectionMatrix(myOpenGL.mulMatrix(myOpenGL.getProjectionMatrix(), perspectiveMatrix)); break;
+            MyOpenGL.setProjectionMatrix(MyOpenGL.mulMatrix(MyOpenGL.getProjectionMatrix(), perspectiveMatrix)); break;
         }
     	
     }
@@ -133,14 +146,14 @@ public class Laboratori3 extends Application {
     // Replace the current matrix with the identity matrix.
     public void defineGlLoadIdentity() {
         // TODO: has de ficar aqui el codi!
-        switch (myOpenGL.getCurrentMatrixType()){
+        switch (MyOpenGL.getCurrentMatrixType()){
             case GL_MODELVIEW:
-                myOpenGL.setModelviewMatrix(new float [][] {{ 1f, 0f, 0f, 0f},
+                MyOpenGL.setModelviewMatrix(new float [][] {{ 1f, 0f, 0f, 0f},
                         { 0f, 1f, 0f, 0f},
                         { 0f, 0f, 1f, 0f},
                         { 0f, 0f, 0f, 1f}}); break;
             case GL_PROJECTION:
-                myOpenGL.setProjectionMatrix(new float [][] {{ 1f, 0f, 0f, 0f},
+                MyOpenGL.setProjectionMatrix(new float [][] {{ 1f, 0f, 0f, 0f},
                     { 0f, 1f, 0f, 0f},
                     { 0f, 0f, 1f, 0f},
                     { 0f, 0f, 0f, 1f}}); break;
@@ -149,22 +162,22 @@ public class Laboratori3 extends Application {
 
     public void defineGlPushMatrix() {
         // TODO: has de ficar aqui el codi!
-    	switch(myOpenGL.getCurrentMatrixType()) {
+    	switch(MyOpenGL.getCurrentMatrixType()) {
     	case GL_PROJECTION:
-    		myOpenGL.pushProjection(); break;
+    		MyOpenGL.pushProjection(); break;
     	case GL_MODELVIEW:
-    		myOpenGL.pushViewmodel(); break;
+    		MyOpenGL.pushViewmodel(); break;
     	}
     	
     }
 
     public void defineGlPopMatrix() {
         // TODO: has de ficar aqui el codi!
-    	switch(myOpenGL.getCurrentMatrixType()) {
+    	switch(MyOpenGL.getCurrentMatrixType()) {
     	case GL_PROJECTION:
-    		myOpenGL.popProjection(); break;
+    		MyOpenGL.popProjection(); break;
     	case GL_MODELVIEW:
-    		myOpenGL.popViewmodel(); break;
+    		MyOpenGL.popViewmodel(); break;
     	}
     }
 
@@ -176,20 +189,16 @@ public class Laboratori3 extends Application {
     		{0f, 0f, 1f, z},
     		{0f, 0f, 0f, 1f}
     	};
-    	
-        switch (myOpenGL.getCurrentMatrixType()){
+        switch (MyOpenGL.getCurrentMatrixType()){
         case GL_MODELVIEW:
-        	//myOpenGL.printMatrix(myOpenGL.mulMatrix(myOpenGL.getModelviewMatrix(), translationMatrix));
-            myOpenGL.setModelviewMatrix(myOpenGL.mulMatrix(myOpenGL.getModelviewMatrix(), translationMatrix)); break;
+            MyOpenGL.setModelviewMatrix(MyOpenGL.mulMatrix(MyOpenGL.getModelviewMatrix(), translationMatrix)); break;
         case GL_PROJECTION:
-        	//myOpenGL.printMatrix(myOpenGL.mulMatrix(myOpenGL.getProjectionMatrix(), perspectiveMatrix));
-            myOpenGL.setProjectionMatrix(myOpenGL.mulMatrix(myOpenGL.getProjectionMatrix(), translationMatrix)); break;
+            MyOpenGL.setProjectionMatrix(MyOpenGL.mulMatrix(MyOpenGL.getProjectionMatrix(), translationMatrix)); break;
         }
     }
 
     public void defineGlScalef(float x, float y, float z) {
         // TODO: has de ficar aqui el codi!
-    	// TODO: has de ficar aqui el codi!
     	float [][]scaleMatrix = new float [][] {
     		{x, 0f, 0f, 0f},
     		{0f, y, 0f, 0f},
@@ -197,59 +206,54 @@ public class Laboratori3 extends Application {
     		{0f, 0f, 0f, 1f}
     	};
     	
-        switch (myOpenGL.getCurrentMatrixType()){
+        switch (MyOpenGL.getCurrentMatrixType()){
         case GL_MODELVIEW:
-        	//myOpenGL.printMatrix(myOpenGL.mulMatrix(myOpenGL.getModelviewMatrix(), translationMatrix));
-            myOpenGL.setModelviewMatrix(myOpenGL.mulMatrix(myOpenGL.getModelviewMatrix(), scaleMatrix)); break;
+            MyOpenGL.setModelviewMatrix(MyOpenGL.mulMatrix(MyOpenGL.getModelviewMatrix(), scaleMatrix)); break;
         case GL_PROJECTION:
-        	//myOpenGL.printMatrix(myOpenGL.mulMatrix(myOpenGL.getProjectionMatrix(), perspectiveMatrix));
-            myOpenGL.setProjectionMatrix(myOpenGL.mulMatrix(myOpenGL.getProjectionMatrix(), scaleMatrix)); break;
+            MyOpenGL.setProjectionMatrix(MyOpenGL.mulMatrix(MyOpenGL.getProjectionMatrix(), scaleMatrix)); break;
         }
     	
     }
 
     public void defineGlRotatef(float angle, float x, float y, float z) {
+    	
         // TODO: has de ficar aqui el codi!
-    	float c = (float)Math.cos(angle);
-    	float s =(float)Math.sin(angle);
-    	// TODO: Normalize vector so that ||(x,y,z)||=1
-    	float[][] rotationMatrix = { { (float)Math.pow(x, 2)*(1-c)+c, x*y*(1-c)-z*s, x*z*(1-c)+y*s, 0},
-    			{ y*x*(1-c)+z*s, (float)Math.pow(y, 2)*(1-c)+c, y*z*(1-c)-x*s, 0},
-    			{ x*z*(1-c)-y*s, y*z*(1-c)+x*s, (float)Math.pow(z, 2)*(1-c)+c, 0},
+    	angle = (float) Math.toRadians(angle);
+    	float c = (float) Math.cos(angle);
+    	float s =(float) Math.sin(angle);;
+    	// Normalize vector so that ||(x,y,z)||=1
+    	
+    	float[][] rotationMatrix = { { x*x*(1-c)+c, x*y*(1-c)-z*s, x*z*(1-c)+y*s, 0},
+    			{ y*x*(1-c)+z*s, y*y*(1-c)+c, y*z*(1-c)-x*s, 0},
+    			{ x*z*(1-c)-y*s, y*z*(1-c)+x*s, z*z*(1-c)+c, 0},
     			{ 0, 0, 0, 1}
     	};
-    	switch (myOpenGL.getCurrentMatrixType()){
+    	switch (MyOpenGL.getCurrentMatrixType()){
         case GL_MODELVIEW:
-        	//myOpenGL.printMatrix(myOpenGL.mulMatrix(myOpenGL.getModelviewMatrix(), translationMatrix));
-            myOpenGL.setModelviewMatrix(myOpenGL.mulMatrix(myOpenGL.getModelviewMatrix(), rotationMatrix)); break;
+            MyOpenGL.setModelviewMatrix(MyOpenGL.mulMatrix(MyOpenGL.getModelviewMatrix(), rotationMatrix)); break;
         case GL_PROJECTION:
-        	//myOpenGL.printMatrix(myOpenGL.mulMatrix(myOpenGL.getProjectionMatrix(), perspectiveMatrix));
-            myOpenGL.setProjectionMatrix(myOpenGL.mulMatrix(myOpenGL.getProjectionMatrix(), rotationMatrix)); break;
+            MyOpenGL.setProjectionMatrix(MyOpenGL.mulMatrix(MyOpenGL.getProjectionMatrix(), rotationMatrix)); break;
         }
     }
 
     public void defineGlBeginPolygon() {
         // TODO: has de ficar aqui el codi!
-        myOpenGL.startVertex();
-        myOpenGL.setWindowWidth(getPanelWidth());
-        myOpenGL.setWindowHeight(getPanelHeight());
+        MyOpenGL.startVertex();
+        MyOpenGL.setWindowWidth(getPanelWidth());
+        MyOpenGL.setWindowHeight(getPanelHeight());
     }
 
     public void defineGlVertex3f(float x, float y, float z) {
         // TODO: has de ficar aqui el codi!
     	float[] coords= new float [] {x, y, z, 1};
-    	myOpenGL.addVertex(coords);
-
-
+    	MyOpenGL.addVertex(coords);
     }
 
     public void defineGlEndPolygon() {
         // TODO: has de ficar aqui el codi!
-    	Integer[] p = myOpenGL.getDrawVertex();
-    	/*for (Integer i: p) System.out.println(i);
-    	System.out.println();*/
-    	//fillPolygon(p);
-    	drawPolygon(p);
+    	Integer[] p = MyOpenGL.getDrawVertex();
+    	fillPolygon(p);
+    	//drawPolygon(p);
     }
 
     // Fi codi de l'alumne
