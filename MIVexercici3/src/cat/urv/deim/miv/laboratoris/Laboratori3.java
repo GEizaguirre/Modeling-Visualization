@@ -1,6 +1,7 @@
 package cat.urv.deim.miv.laboratoris;
 
 import cat.urv.deim.miv.Application;
+import cat.urv.deim.miv.laboratoris.GLEnum;
 
 public class Laboratori3 extends Application {
 
@@ -28,34 +29,38 @@ public class Laboratori3 extends Application {
     	//testMinimal();
     	//testTranslate();
     	//testRotate();
-    	testScale();
-    	//testDefault();
+    	//testScale();
+    	testDefault();
 
     	
     }
 
-    
-    
     // Practica 3, implementa infraestructura de matrius OpenGL
     // Hint: Pots mirar l'API d'OpenGL
 
     // Inici codi de l'alumne
 
     public void defineGlMatrixMode(int model) {
-        // TODO: has de ficar aqui el codi!
-        switch(model) {
-            case GL_MODELVIEW:
-                MyOpenGL.setCurrentMatrixType(GL_MODELVIEW); break;
-            case GL_PROJECTION:
-                MyOpenGL.setCurrentMatrixType(GL_PROJECTION); break;
-        }
+
+    	// If model is not correct.
+    	if ((model!=GL_MODELVIEW) && (model!=GL_PROJECTION)) MyOpenGL.setCstate(GLEnum.GL_INVALID_ENUM);
+    	// If defineGLMatrixMode is executed between the execution of glBeginPolygon and glEndPolygon.
+    	else if (MyOpenGL.getCstate()==GLEnum.GL_POLYGON) MyOpenGL.setCstate(GLEnum.GL_INVALID_OPERATION);
+    	else
+    	{
+	        switch(model) {
+	            case GL_MODELVIEW:
+	                MyOpenGL.setCurrentMatrixType(GL_MODELVIEW); break;
+	            case GL_PROJECTION:
+	                MyOpenGL.setCurrentMatrixType(GL_PROJECTION); break;
+	        }
+    	}
     }
 
     public void defineGlViewport(int x, int y, int width, int height) {
-        // TODO: has de ficar aqui el codi!
+
         if (width<0 || height<0)  {
-            // TODO:GL_INVALID_VALUE
-            System.out.println("GL_INVALID_VALUE");
+            MyOpenGL.setCstate(GLEnum.GL_INVALID_VALUE);
         }
         // Specify lower left corner.
         MyOpenGL.setLowerleftX(x);
@@ -67,7 +72,7 @@ public class Laboratori3 extends Application {
     }
 
     public void defineGluPerspective(float fovy, float aspect, float zNear, float zFar) {
-        // TODO: has de ficar aqui el codi!
+ 
     	fovy = (float) Math.toRadians(fovy);
     	float f = 1/(float)Math.tan(fovy/2);
     	float [][] perspectiveMatrix = new float [][] {
@@ -89,8 +94,10 @@ public class Laboratori3 extends Application {
 
     // Replace the current matrix with the identity matrix.
     public void defineGlLoadIdentity() {
-        // TODO: has de ficar aqui el codi!
-        switch (MyOpenGL.getCurrentMatrixType()){
+
+    	if (MyOpenGL.getCstate()==GLEnum.GL_POLYGON) MyOpenGL.setCstate(GLEnum.GL_INVALID_OPERATION);
+    	else
+    		switch (MyOpenGL.getCurrentMatrixType()){
             case GL_MODELVIEW:
                 MyOpenGL.setModelviewMatrix(new float [][] {{ 1f, 0f, 0f, 0f},
                         { 0f, 1f, 0f, 0f},
@@ -101,104 +108,119 @@ public class Laboratori3 extends Application {
                     { 0f, 1f, 0f, 0f},
                     { 0f, 0f, 1f, 0f},
                     { 0f, 0f, 0f, 1f}}); break;
-        }
+    		}
     }
 
     public void defineGlPushMatrix() {
-        // TODO: has de ficar aqui el codi!
-    	switch(MyOpenGL.getCurrentMatrixType()) {
-    	case GL_PROJECTION:
-    		MyOpenGL.pushProjection(); break;
-    	case GL_MODELVIEW:
-    		MyOpenGL.pushViewmodel(); break;
-    	}
     	
+    	if (MyOpenGL.getCstate()==GLEnum.GL_POLYGON) MyOpenGL.setCstate(GLEnum.GL_INVALID_OPERATION);
+    	else 
+	    	switch(MyOpenGL.getCurrentMatrixType()) {
+	    	case GL_PROJECTION:
+	    		MyOpenGL.pushProjection(); break;
+	    	case GL_MODELVIEW:
+	    		MyOpenGL.pushViewmodel(); break;
+	    	}
     }
 
     public void defineGlPopMatrix() {
-        // TODO: has de ficar aqui el codi!
-    	switch(MyOpenGL.getCurrentMatrixType()) {
-    	case GL_PROJECTION:
-    		MyOpenGL.popProjection(); break;
-    	case GL_MODELVIEW:
-    		MyOpenGL.popViewmodel(); break;
-    	}
+
+    	if (MyOpenGL.getCstate()==GLEnum.GL_POLYGON) MyOpenGL.setCstate(GLEnum.GL_INVALID_OPERATION);
+    	else
+	    	switch(MyOpenGL.getCurrentMatrixType()) {
+	    	case GL_PROJECTION:
+	    		MyOpenGL.popProjection(); break;
+	    	case GL_MODELVIEW:
+	    		MyOpenGL.popViewmodel(); break;
+	    	}
     }
 
     public void defineGlTranslatef(float x, float y, float z) {
-        // TODO: has de ficar aqui el codi!
-    	float [][]translationMatrix = new float [][] {
-    		{1f, 0f, 0f, x},
-    		{0f, 1f, 0f, y},
-    		{0f, 0f, 1f, z},
-    		{0f, 0f, 0f, 1f}
-    	};
-        switch (MyOpenGL.getCurrentMatrixType()){
-        case GL_MODELVIEW:
-            MyOpenGL.setModelviewMatrix(MyOpenGL.mulMatrix(MyOpenGL.getModelviewMatrix(), translationMatrix)); break;
-        case GL_PROJECTION:
-            MyOpenGL.setProjectionMatrix(MyOpenGL.mulMatrix(MyOpenGL.getProjectionMatrix(), translationMatrix)); break;
-        }
+
+    	if (MyOpenGL.getCstate()==GLEnum.GL_POLYGON) MyOpenGL.setCstate(GLEnum.GL_INVALID_OPERATION);
+    	else {
+	    	float [][]translationMatrix = new float [][] {
+	    		{1f, 0f, 0f, x},
+	    		{0f, 1f, 0f, y},
+	    		{0f, 0f, 1f, z},
+	    		{0f, 0f, 0f, 1f}
+	    	};
+	        switch (MyOpenGL.getCurrentMatrixType()){
+	        case GL_MODELVIEW:
+	            MyOpenGL.setModelviewMatrix(MyOpenGL.mulMatrix(MyOpenGL.getModelviewMatrix(), translationMatrix)); break;
+	        case GL_PROJECTION:
+	            MyOpenGL.setProjectionMatrix(MyOpenGL.mulMatrix(MyOpenGL.getProjectionMatrix(), translationMatrix)); break;
+	        }
+    	}
     }
 
     public void defineGlScalef(float x, float y, float z) {
-        // TODO: has de ficar aqui el codi!
-    	float [][]scaleMatrix = new float [][] {
-    		{x, 0f, 0f, 0f},
-    		{0f, y, 0f, 0f},
-    		{0f, 0f, z, 0f},
-    		{0f, 0f, 0f, 1f}
-    	};
-    	
-        switch (MyOpenGL.getCurrentMatrixType()){
-        case GL_MODELVIEW:
-            MyOpenGL.setModelviewMatrix(MyOpenGL.mulMatrix(MyOpenGL.getModelviewMatrix(), scaleMatrix)); break;
-        case GL_PROJECTION:
-            MyOpenGL.setProjectionMatrix(MyOpenGL.mulMatrix(MyOpenGL.getProjectionMatrix(), scaleMatrix)); break;
-        }
-    	
+
+    	if (MyOpenGL.getCstate()==GLEnum.GL_POLYGON) MyOpenGL.setCstate(GLEnum.GL_INVALID_OPERATION);
+    	else {
+	    	float [][]scaleMatrix = new float [][] {
+	    		{x, 0f, 0f, 0f},
+	    		{0f, y, 0f, 0f},
+	    		{0f, 0f, z, 0f},
+	    		{0f, 0f, 0f, 1f}
+	    	};
+	    	
+	        switch (MyOpenGL.getCurrentMatrixType()){
+	        case GL_MODELVIEW:
+	            MyOpenGL.setModelviewMatrix(MyOpenGL.mulMatrix(MyOpenGL.getModelviewMatrix(), scaleMatrix)); break;
+	        case GL_PROJECTION:
+	            MyOpenGL.setProjectionMatrix(MyOpenGL.mulMatrix(MyOpenGL.getProjectionMatrix(), scaleMatrix)); break;
+	        }
+    	}	
     }
 
     public void defineGlRotatef(float angle, float x, float y, float z) {
     	
-
-    	angle = (float) Math.toRadians(angle);
-    	float c = (float) Math.cos(angle);
-    	float s =(float) Math.sin(angle);;
-    	// Normalize vector so that ||(x,y,z)||=1
-    	
-    	float[][] rotationMatrix = { { x*x*(1-c)+c, x*y*(1-c)-z*s, x*z*(1-c)+y*s, 0},
-    			{ y*x*(1-c)+z*s, y*y*(1-c)+c, y*z*(1-c)-x*s, 0},
-    			{ x*z*(1-c)-y*s, y*z*(1-c)+x*s, z*z*(1-c)+c, 0},
-    			{ 0, 0, 0, 1}
-    	};
-    	switch (MyOpenGL.getCurrentMatrixType()){
-        case GL_MODELVIEW:
-            MyOpenGL.setModelviewMatrix(MyOpenGL.mulMatrix(MyOpenGL.getModelviewMatrix(), rotationMatrix)); break;
-        case GL_PROJECTION:
-            MyOpenGL.setProjectionMatrix(MyOpenGL.mulMatrix(MyOpenGL.getProjectionMatrix(), rotationMatrix)); break;
-        }
+    	if (MyOpenGL.getCstate()==GLEnum.GL_POLYGON) MyOpenGL.setCstate(GLEnum.GL_INVALID_OPERATION);
+    	else if (x==0 && y==0 && z==0) MyOpenGL.setCstate(GLEnum.GL_INVALID_VALUE);
+    	else {
+	    	angle = (float) Math.toRadians(angle);
+	    	float c = (float) Math.cos(angle);
+	    	float s =(float) Math.sin(angle);;
+	    	
+	    	float[][] rotationMatrix = { { x*x*(1-c)+c, x*y*(1-c)-z*s, x*z*(1-c)+y*s, 0},
+	    			{ y*x*(1-c)+z*s, y*y*(1-c)+c, y*z*(1-c)-x*s, 0},
+	    			{ x*z*(1-c)-y*s, y*z*(1-c)+x*s, z*z*(1-c)+c, 0},
+	    			{ 0, 0, 0, 1}
+	    	};
+	    	switch (MyOpenGL.getCurrentMatrixType()){
+	        case GL_MODELVIEW:
+	            MyOpenGL.setModelviewMatrix(MyOpenGL.mulMatrix(MyOpenGL.getModelviewMatrix(), rotationMatrix)); break;
+	        case GL_PROJECTION:
+	            MyOpenGL.setProjectionMatrix(MyOpenGL.mulMatrix(MyOpenGL.getProjectionMatrix(), rotationMatrix)); break;
+	        }
+    	}
     	
     }
 
     public void defineGlBeginPolygon() {
-        // TODO: has de ficar aqui el codi!
-        MyOpenGL.startVertex();
-        MyOpenGL.setWindowWidth(getPanelWidth());
-        MyOpenGL.setWindowHeight(getPanelHeight());
+    	
+    	if (MyOpenGL.getCstate()==GLEnum.GL_POLYGON) MyOpenGL.setCstate(GLEnum.GL_INVALID_OPERATION);
+    	else {
+	        MyOpenGL.startVertex();
+	        MyOpenGL.setWindowWidth(getPanelWidth());
+	        MyOpenGL.setWindowHeight(getPanelHeight());
+	        MyOpenGL.setCstate(GLEnum.GL_POLYGON);
+    	}
     }
 
     public void defineGlVertex3f(float x, float y, float z) {
-        // TODO: has de ficar aqui el codi!
     	float[] coords= new float [] {x, y, z, 1};
     	MyOpenGL.addVertex(coords);
     }
 
     public void defineGlEndPolygon() {
-        // TODO: has de ficar aqui el codi!
-    	Integer[] p = MyOpenGL.getDrawVertex();
-    	fillPolygon(p);
-    	//drawPolygon(p);
+    	if (MyOpenGL.getCstate()==GLEnum.GL_POLYGON) {
+	    	Integer[] p = MyOpenGL.getDrawVertex();
+	    	MyOpenGL.setCstate(GLEnum.GL_CORRECT);
+	    	fillPolygon(p);
+    	}
+    	else MyOpenGL.setCstate(GLEnum.GL_INVALID_OPERATION);
     }
 
     public void testMinimal() {
@@ -327,6 +349,7 @@ public class Laboratori3 extends Application {
         glEndPolygon();
         glPopMatrix();
 		
+        /*
 		// Translate left.
 		glPushMatrix();
 		glTranslatef(-0.3f, 0f, 0f);
@@ -381,6 +404,7 @@ public class Laboratori3 extends Application {
         glVertex3f( 0.5f, -0.5f, 0.0f);
         glEndPolygon();
         glPopMatrix();
+        */
     }
     
 
@@ -459,6 +483,7 @@ public class Laboratori3 extends Application {
         glPopMatrix();
 				        
 		 
+        /*
 		// Rotate y.
 		glPushMatrix();
 		glRotatef(-30f, 0f, 1f, 0f);
@@ -482,6 +507,7 @@ public class Laboratori3 extends Application {
         glVertex3f( 0.5f, -0.5f, 0.0f);
         glEndPolygon();
         glPopMatrix();
+        */
     }
     
     // Fi codi de l'alumne

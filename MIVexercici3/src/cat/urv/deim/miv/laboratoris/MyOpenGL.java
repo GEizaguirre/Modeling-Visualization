@@ -11,7 +11,10 @@ import java.util.ArrayList;
 * @since   7-11-2019 
 */
 
+enum GLEnum { GL_INVALID_ENUM, GL_INVALID_OPERATION, GL_CORRECT, GL_POLYGON, GL_INVALID_VALUE }
 public class MyOpenGL {
+	
+	private static GLEnum cstate = GLEnum.GL_CORRECT;
     private static final int MATRIX_SIZE = 4;
     private static int angle; 
     private static float[][] projectionMatrix = new float[MATRIX_SIZE][MATRIX_SIZE];
@@ -153,7 +156,6 @@ public class MyOpenGL {
     		System.exit(-1);
     	}
  
-    	//Get
         if (currentVertex != null) {
         	
         	// Generate coordinates.
@@ -234,17 +236,6 @@ public class MyOpenGL {
     	currentVertex=new ArrayList<>();
     }
     
-    
-    //TODO REMOVE THESE FUNCTIONS
-    public static void printMatrix(float[][] matrix) {
-    	for (int i=0; i<MATRIX_SIZE; i++) {
-    		for (int j=0; j<MATRIX_SIZE; j++) {
-    			System.out.print(" "+matrix[i][j]);
-    		}
-    		System.out.println();
-    	}
-    }
-    
     public static void setWindowWidth(int w) {
     	windowWidth = w;
     }
@@ -266,7 +257,15 @@ public class MyOpenGL {
         }
     }
     
-    public static float[][] mulMatrix(float[][] mat1, float[][] mat2) {
+    public static GLEnum getCstate() {
+		return cstate;
+	}
+
+	public static void setCstate(GLEnum cstate) {
+		MyOpenGL.cstate = cstate;
+	}
+
+	public static float[][] mulMatrix(float[][] mat1, float[][] mat2) {
     	float[][] destination =new float[MATRIX_SIZE][MATRIX_SIZE];
     	float value;
     	for (int i = 0; i < MATRIX_SIZE; i++) {
@@ -280,4 +279,6 @@ public class MyOpenGL {
         }
     	return destination;
     }
+    
+    
 }
