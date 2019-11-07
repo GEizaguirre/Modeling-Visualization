@@ -1,20 +1,19 @@
 package cat.urv.deim.miv.laboratoris;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Stack;
-
-import cat.urv.deim.miv.Application;
-
 import java.util.ArrayList;
 
-import static cat.urv.deim.miv.Application.GL_MODELVIEW;
-import static cat.urv.deim.miv.Application.GL_PROJECTION;
+/**
+* Auxiliary class for Java OpenGL implementation.
+*
+* @author  German Telmo Eizaguirre Suarez
+* @version 1.0
+* @since   7-11-2019 
+*/
 
 public class MyOpenGL {
     private static final int MATRIX_SIZE = 4;
     private static int angle;
-    private static float[][] currentMatrix;
     private static float[][] projectionMatrix = new float[MATRIX_SIZE][MATRIX_SIZE];
     private static float[][] modelviewMatrix = new float[MATRIX_SIZE][MATRIX_SIZE];
     private static Stack <float[][]> projectionStack = new Stack<>();
@@ -77,20 +76,6 @@ public class MyOpenGL {
         angle = ng;
     }
 
-    public static float[][] getCurrentMatrix() {
-        return currentMatrix;
-    }
-
-    public static void setCurrentMatrix(int model) {
-        switch (model){
-            case GL_MODELVIEW:
-                currentMatrix = modelviewMatrix; break;
-            case GL_PROJECTION:
-                currentMatrix = projectionMatrix; break;
-        }
-        currentMatrixType = model;
-    }
-
     public static float[][] getProjectionMatrix() {
         return projectionMatrix;
     }
@@ -127,9 +112,6 @@ public class MyOpenGL {
         return lowerleftY;
     }
 
-    public static void setCurrentMatrix(float[][] cMatrix) {
-        currentMatrix = cMatrix;
-    }
 
     public static int getCurrentMatrixType() {
         return currentMatrixType;
