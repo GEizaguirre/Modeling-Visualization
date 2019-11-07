@@ -97,7 +97,8 @@ public class MyOpenGLRenderer implements Renderer {
 		// Red Square
 		gl.glPushMatrix();
 		//gl.glRotatef(angle, 0.0f, 0.0f, 1.0f);
-		//gl.glTranslatef(-2.0f, 0.0f, 0.0f);
+		//gl.glTranslatef(-0.5f, -0.5f, 0.0f);
+		gl.glScalef(-0.25f, 0.25f, 1f);
 		//gl.glColor4f(1.0f, 0.0f, 0.0f, 0.0f);
 		square2.update(System.currentTimeMillis());
 		square2.draw(gl);
