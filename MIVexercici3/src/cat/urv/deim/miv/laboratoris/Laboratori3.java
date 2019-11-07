@@ -25,114 +25,16 @@ public class Laboratori3 extends Application {
 
     public void paint() {
     	//640x327
-    	testMinimal();
+    	//testMinimal();
+    	//testTranslate();
+    	//testRotate();
+    	testScale();
     	//testDefault();
-    	//testScale();
+
     	
     }
 
-    public void testMinimal() {
-    	int width = getPanelWidth();
-		int height = getPanelHeight();
-		glViewport(0, 0, width, height);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		glBeginPolygon();
-        glVertex3f(-0.5f, -0.5f, 0.0f);
-        glVertex3f(-0.5f,  0.5f, 0.0f);
-        glVertex3f( 0.5f,  0.5f, 0.0f);
-        glVertex3f( 0.5f, -0.5f, 0.0f);
-        glEndPolygon();
-		
-    }
-    public void testDefault() {
-    	int width = getPanelWidth();
-		int height = getPanelHeight();
-		float aspect = width / (float) height;
-	
-		glViewport(0, 0, width, height);
-		
-		setColor(1.0f, 0.0f, 0.0f);
-	
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		gluPerspective(60.0f, aspect, 0.1f, 1000.0f);
-		
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		glTranslatef(0.0f, 0.0f, -5.0f);
-		
-		glPushMatrix();
-		int midAngle = angle % 200;
-		if (midAngle > 100)
-			midAngle = 200 - midAngle;
-		glTranslatef(0.0f, 0.0f, midAngle * -0.1f);
-		setColor(0.0f, 1.0f, 0.0f);
-		drawRectangle();
-		glPopMatrix();
-		
-		glRotatef(angle, 0.0f, 1.0f, 0.0f);
-
-		glPushMatrix();
-		glRotatef(angle, 0.0f, 0.0f, 1.0f);
-		glTranslatef(-2.0f, 0.0f, 0.0f);
-		setColor(1.0f, 0.0f, 0.0f);
-		drawRectangle();
-		glPopMatrix();
-		
-		glPushMatrix();
-		glRotatef(2.0f * angle, 0.0f, 0.0f, 1.0f);
-		glTranslatef( 1.0f, 0.0f, 0.0f);
-		setColor(0.0f, 0.0f, 1.0f);
-		drawRectangle();
-		glPopMatrix();
-		
-		angle += 5.0f;
-    }
     
-    public void testScale () {
-    	//640x327
-        int width = getPanelWidth();
-        int height = getPanelHeight();
-
-        float aspect = width / (float) height;
-        
-        glViewport(0, 0, width, height);
-
-        setColor(1.0f, 0.0f, 0.0f);
-
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        gluPerspective(30.0f, aspect, 0.1f, 1000.0f);
-
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-        glTranslatef(0.0f, 0.0f, -3.0f);
-        
-        glPushMatrix();
-		glTranslatef( -1.0f, 0.0f, 0.0f);
-		glScalef(0.5f, 0.5f, 0f);
-		glScalef(scaleCounter, scaleCounter, 0f);
-		setColor(0.7f, 0.3f, 1.0f);
-		drawRectangle();
-		glPopMatrix();
-		
-		glPushMatrix();
-		glTranslatef( 1.0f, 0.0f, 0.0f);
-		glScalef(0.2f, 0.2f, 0f);
-		if (up) glScalef(scaleCounter, scaleCounter*2, 0f);
-		else glScalef(scaleCounter*2, scaleCounter, 0f);
-		setColor(0.1f, 0.38f, 0.6f);
-		drawRectangle();
-		glPopMatrix();
-        
-        if (scaleCounter>1.5) up =false;
-        if (scaleCounter<0) up = true;
-        if (up) scaleCounter = scaleCounter+0.05f;
-        else scaleCounter = scaleCounter-0.05f;
-    }
     
     // Practica 3, implementa infraestructura de matrius OpenGL
     // Hint: Pots mirar l'API d'OpenGL
@@ -259,7 +161,7 @@ public class Laboratori3 extends Application {
 
     public void defineGlRotatef(float angle, float x, float y, float z) {
     	
-        // TODO: has de ficar aqui el codi!
+
     	angle = (float) Math.toRadians(angle);
     	float c = (float) Math.cos(angle);
     	float s =(float) Math.sin(angle);;
@@ -276,6 +178,7 @@ public class Laboratori3 extends Application {
         case GL_PROJECTION:
             MyOpenGL.setProjectionMatrix(MyOpenGL.mulMatrix(MyOpenGL.getProjectionMatrix(), rotationMatrix)); break;
         }
+    	
     }
 
     public void defineGlBeginPolygon() {
@@ -298,6 +201,289 @@ public class Laboratori3 extends Application {
     	//drawPolygon(p);
     }
 
+    public void testMinimal() {
+    	int width = getPanelWidth();
+		int height = getPanelHeight();
+		glViewport(0, 0, width, height);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glBeginPolygon();
+        glVertex3f(-0.5f, -0.5f, 0.0f);
+        glVertex3f(-0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f, -0.5f, 0.0f);
+        glEndPolygon();
+		
+    }
+
+    
+    public void testDefault() {
+    	int width = getPanelWidth();
+		int height = getPanelHeight();
+		float aspect = width / (float) height;
+	
+		glViewport(0, 0, width, height);
+		
+		setColor(1.0f, 0.0f, 0.0f);
+	
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		gluPerspective(60.0f, aspect, 0.1f, 1000.0f);
+		
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glTranslatef(0.0f, 0.0f, -5.0f);
+		
+		glPushMatrix();
+		int midAngle = angle % 200;
+		if (midAngle > 100)
+			midAngle = 200 - midAngle;
+		glTranslatef(0.0f, 0.0f, midAngle * -0.1f);
+		setColor(0.0f, 1.0f, 0.0f);
+		drawRectangle();
+		glPopMatrix();
+		
+		glRotatef(angle, 0.0f, 1.0f, 0.0f);
+
+		glPushMatrix();
+		glRotatef(angle, 0.0f, 0.0f, 1.0f);
+		glTranslatef(-2.0f, 0.0f, 0.0f);
+		setColor(1.0f, 0.0f, 0.0f);
+		drawRectangle();
+		glPopMatrix();
+		
+		glPushMatrix();
+		glRotatef(2.0f * angle, 0.0f, 0.0f, 1.0f);
+		glTranslatef( 1.0f, 0.0f, 0.0f);
+		setColor(0.0f, 0.0f, 1.0f);
+		drawRectangle();
+		glPopMatrix();
+		
+		angle += 5.0f;
+    }
+    
+    public void testScale () {
+    	//640x327
+        int width = getPanelWidth();
+        int height = getPanelHeight();
+
+        float aspect = width / (float) height;
+        
+        glViewport(0, 0, width, height);
+
+        setColor(1.0f, 0.0f, 0.0f);
+
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        gluPerspective(30.0f, aspect, 0.1f, 1000.0f);
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        glTranslatef(0.0f, 0.0f, -3.0f);
+        
+        glPushMatrix();
+		glTranslatef( -1.0f, 0.0f, 0.0f);
+		glScalef(0.5f, 0.5f, 0f);
+		glScalef(scaleCounter, scaleCounter, 0f);
+		setColor(0.7f, 0.3f, 1.0f);
+		drawRectangle();
+		glPopMatrix();
+		
+		glPushMatrix();
+		glTranslatef( 1.0f, 0.0f, 0.0f);
+		glScalef(0.2f, 0.2f, 0f);
+		if (up) glScalef(scaleCounter, scaleCounter*2, 0f);
+		else glScalef(scaleCounter*2, scaleCounter, 0f);
+		setColor(0.1f, 0.38f, 0.6f);
+		drawRectangle();
+		glPopMatrix();
+        
+        if (scaleCounter>1.5) up =false;
+        if (scaleCounter<0) up = true;
+        if (up) scaleCounter = scaleCounter+0.05f;
+        else scaleCounter = scaleCounter-0.05f;
+    }
+    
+    public void testTranslate() {
+    	
+    	int width = getPanelWidth();
+		int height = getPanelHeight();
+		glViewport(0, 0, width, height);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		
+		//Translate right.
+		glPushMatrix();
+		glTranslatef(0.3f, 0f, 0f);
+		glBeginPolygon();
+        glVertex3f(-0.5f, -0.5f, 0.0f);
+        glVertex3f(-0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f, -0.5f, 0.0f);
+        glEndPolygon();
+        glPopMatrix();
+		
+		// Translate left.
+		glPushMatrix();
+		glTranslatef(-0.3f, 0f, 0f);
+		glBeginPolygon();
+        glVertex3f(-0.5f, -0.5f, 0.0f);
+        glVertex3f(-0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f, -0.5f, 0.0f);
+        glEndPolygon();
+        glPopMatrix();
+		
+		// Translate down.
+		glPushMatrix();
+		glTranslatef(0f, -0.3f, 0f);
+		glBeginPolygon();
+        glVertex3f(-0.5f, -0.5f, 0.0f);
+        glVertex3f(-0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f, -0.5f, 0.0f);
+        glEndPolygon();
+        glPopMatrix();
+		
+		// Translate down.
+		glPushMatrix();
+		glTranslatef(0f, 0.3f, 0f);
+		glBeginPolygon();
+        glVertex3f(-0.5f, -0.5f, 0.0f);
+        glVertex3f(-0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f, -0.5f, 0.0f);
+        glEndPolygon();
+        glPopMatrix();
+		
+		// Translate diagonal.
+		glPushMatrix();
+		glTranslatef(0.5f, 0.5f, 0f);
+		glBeginPolygon();
+        glVertex3f(-0.5f, -0.5f, 0.0f);
+        glVertex3f(-0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f, -0.5f, 0.0f);
+        glEndPolygon();
+        glPopMatrix();
+		
+		// Translate out of screen.
+		glPushMatrix();
+		glTranslatef(2f, 2f, 0f);
+		glBeginPolygon();
+        glVertex3f(-0.5f, -0.5f, 0.0f);
+        glVertex3f(-0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f, -0.5f, 0.0f);
+        glEndPolygon();
+        glPopMatrix();
+    }
+    
+
+    public void testRotate() {
+    	
+    	int width = getPanelWidth();
+		int height = getPanelHeight();
+		glViewport(0, 0, width, height);
+		
+		/*
+		// Rotations without perspective.
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		
+		
+		//Rotate x.
+		glPushMatrix();
+		glRotatef(60f, 1f, 0f, 0f);
+		glBeginPolygon();
+        glVertex3f(-0.5f, -0.5f, 0.0f);
+        glVertex3f(-0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f, -0.5f, 0.0f);
+        glEndPolygon();
+        glPopMatrix();
+		        
+		   
+		// Rotate y.
+		glPushMatrix();
+		glRotatef(-30f, 0f, 1f, 0f);
+		glBeginPolygon();
+        glVertex3f(-0.5f, -0.5f, 0.0f);
+        glVertex3f(-0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f, -0.5f, 0.0f);
+        glEndPolygon();
+        glPopMatrix();
+        
+        
+		
+        // Rotate z.
+ 		glPushMatrix();
+ 		glRotatef(30f, 0f, 0f, 1f);
+ 		glBeginPolygon();
+        glVertex3f(-0.5f, -0.5f, 0.0f);
+        glVertex3f(-0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f, -0.5f, 0.0f);
+        glEndPolygon();
+        glPopMatrix();
+		
+		*/
+		
+        //Rotations with perspective.
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		gluPerspective(30.0f, width/height, 0.1f, 1000.0f);
+
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glTranslatef(0f, 0f, -5f);
+        
+		
+		//Rotate x.
+		glPushMatrix();
+		glRotatef(60f, 1f, 0f, 0f);
+		glBeginPolygon();
+        glVertex3f(-0.5f, -0.5f, 0.0f);
+        glVertex3f(-0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f, -0.5f, 0.0f);
+        glEndPolygon();
+        glPopMatrix();
+				        
+		 
+		// Rotate y.
+		glPushMatrix();
+		glRotatef(-30f, 0f, 1f, 0f);
+		glBeginPolygon();
+        glVertex3f(-0.5f, -0.5f, 0.0f);
+        glVertex3f(-0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f, -0.5f, 0.0f);
+        glEndPolygon();
+        glPopMatrix();
+        
+        
+		
+        // Rotate z.
+ 		glPushMatrix();
+ 		glRotatef(30f, 0f, 0f, 1f);
+ 		glBeginPolygon();
+        glVertex3f(-0.5f, -0.5f, 0.0f);
+        glVertex3f(-0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f,  0.5f, 0.0f);
+        glVertex3f( 0.5f, -0.5f, 0.0f);
+        glEndPolygon();
+        glPopMatrix();
+    }
+    
     // Fi codi de l'alumne
     public static void main(String[] args) {
         Laboratori3 example = new Laboratori3();

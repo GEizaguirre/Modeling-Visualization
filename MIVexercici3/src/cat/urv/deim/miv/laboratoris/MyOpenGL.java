@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class MyOpenGL {
     private static final int MATRIX_SIZE = 4;
-    private static int angle;
+    private static int angle; 
     private static float[][] projectionMatrix = new float[MATRIX_SIZE][MATRIX_SIZE];
     private static float[][] modelviewMatrix = new float[MATRIX_SIZE][MATRIX_SIZE];
     private static Stack <float[][]> projectionStack = new Stack<>();
@@ -148,7 +148,7 @@ public class MyOpenGL {
     public static void addVertex(float[] coord) {
 
     	float[] aux_coord = new float[MATRIX_SIZE];
-    	if (coord[MATRIX_SIZE-1] == 0) {
+    	if (coord[MATRIX_SIZE-1] == 0f) {
     		System.out.println ("ERROR :: Invalid value, homogene coordinate can not be 0");
     		System.exit(-1);
     	}
@@ -197,11 +197,11 @@ public class MyOpenGL {
         	            // Get window coordinates        	            
         	            if ((windowWidth==0) || (windowHeight==0)) System.out.println("WARNING :: Viewport may not be sspecified");
         	        	
-        	            if (cd[0] >= 0) cd[0] = windowWidth/2 + cd[0]*windowWidth/2 ;
-        	        	else cd[0] = windowWidth/2*(1-Math.abs(cd[0])) -1;
+        	            if (cd[0] >= 0) cd[0] = windowWidth/2 + cd[0]*windowWidth/2 -1;
+        	        	else cd[0] = windowWidth/2*(1-Math.abs(cd[0])) ;
         	        	
         	        	if (cd[1] >= 0) cd[1] = windowHeight/2 + cd[1]*windowHeight/2+1;
-        	        	else cd[1] = windowHeight/2*(1-Math.abs(cd[1]))+1;
+        	        	else cd[1] = windowHeight/2*(1-Math.abs(cd[1]));
         	        	
                     } else for (int i=0; i < MATRIX_SIZE; i++) cd[i]=Integer.MAX_VALUE;
                     
@@ -211,7 +211,7 @@ public class MyOpenGL {
 	                    	cd[i] = lowerleftX + (cd[i]) * (viewportWidth-lowerleftX)/windowWidth;
 	                    } else if (i == 1) {	            
 	                    	// Viewport transformation.
-	                    	cd[i] = lowerleftY + (cd[i]) * (viewportHeight-lowerleftX)/windowHeight;
+	                    	cd[i] = lowerleftY + (windowHeight-cd[i]) * (viewportHeight-lowerleftY)/windowHeight;
 	                    }
                 	}
 
