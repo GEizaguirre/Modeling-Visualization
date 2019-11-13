@@ -61,10 +61,10 @@ public class AnimationManager {
                         //System.out.println("\nNEW "+parts[0]);
                     }
                     float[] coordinates = {
-                            Float.parseFloat(parts[2]) / width, 1 - Float.parseFloat(parts[3]) / height, //B
+                            Float.parseFloat(parts[2]) / width, 1 - (Float.parseFloat(parts[3])-1) / height, //B
                             Float.parseFloat(parts[2]) / width, 1 - (Float.parseFloat(parts[5])+Float.parseFloat(parts[3])) / height, // A
                             (Float.parseFloat(parts[2]) + Float.parseFloat(parts[4]) - 1) / width, 1 - (Float.parseFloat(parts[5])+Float.parseFloat(parts[3])) / height, //D
-                            (Float.parseFloat(parts[2]) + Float.parseFloat(parts[4]) - 1) / width, 1 - Float.parseFloat(parts[3]) / height //C
+                            (Float.parseFloat(parts[2]) + Float.parseFloat(parts[4]) - 1) / width, 1 - (Float.parseFloat(parts[3])-1) / height //C
                     };
                     /*System.out.print("Next coord :");
                     for (Float f : coordinates){
