@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 
-
+//TODO: TileMap manager.
 public class TileMap {
 
     static double DEFAULT_SPEED=100;

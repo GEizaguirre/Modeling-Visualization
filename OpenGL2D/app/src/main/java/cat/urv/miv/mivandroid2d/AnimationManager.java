@@ -13,6 +13,7 @@ import java.util.HashMap;
 
 import javax.microedition.khronos.opengles.GL10;
 
+//TODO: Tilemap manager.
 public class AnimationManager {
 
     private GL10 gl;

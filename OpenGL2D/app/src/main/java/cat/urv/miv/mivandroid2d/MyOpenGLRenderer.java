@@ -145,6 +145,8 @@ public class MyOpenGLRenderer implements Renderer {
 		// Reset the projection matrix
 		gl.glLoadIdentity();
 		// Calculate the aspect ratio of the window
+
+		// TODO: set parallel perspective and have it working with it.
 		GLU.gluPerspective(gl, 60.0f, (float) width / (float) height, 0.1f, 100.0f);
 		//gl.glOrthof(0, width, 0, height, 0.1f, 100);
 
