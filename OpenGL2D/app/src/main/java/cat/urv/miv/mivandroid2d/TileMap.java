@@ -62,7 +62,7 @@ public class TileMap {
         int width = mBitmap.getWidth();
 
 
-        System.out.println("Image size: "+height + "x" + width);
+        //System.out.println("Image size: "+height + "x" + width);
         /* Read text file and create structure passing each images' coordinates
         to [0,1].
          */
@@ -100,7 +100,9 @@ public class TileMap {
                             column*tileWidth/(float)width, ((row)*tileHeight)/(float)height,
                             ((column+1)*tileWidth-1)/(float)width, ((row)*tileHeight)/(float)height,
                             ((column+1)*tileWidth-1)/(float)width, ((row+1)*tileHeight-1)/(float)height});
-                    /*float u1=column*tileWidth/(float)width;
+
+                    System.out.print(tilemap[i][j]+" ");
+                    float u1=column*tileWidth/(float)width;
                     float v1=((row+1)*tileHeight-1)/(float)(height);
                     float u2=column*tileWidth/(float)width;
                     float v2=((row)*tileHeight)/(float)height;
@@ -112,7 +114,7 @@ public class TileMap {
                     System.out.println("\n\t Coordinates: ("+ u1 +", "+v1+") - ("+
                             u2 +", "+v2+") - ("+
                             u3 +"," + v3+") - ("+
-                            u4 +", "+v4+")");*/
+                            u4 +", "+v4+")");
                 }
             }
         } catch (java.io.IOException ioe) {
@@ -120,13 +122,14 @@ public class TileMap {
         }
     }
 
-    public void draw(float z, float displx, float disply){
+    public void draw(float z, float displx, float disply, float scx, float scy){
         int viewport[] = new int[4];
         gl.glGetIntegerv(GL11.GL_VIEWPORT, viewport, 0);
         float dispTilex = tileWidth/(float)viewport[2];
         float dispTiley = tileWidth/(float)viewport[3];
         gl.glPushMatrix();
         gl.glTranslatef(displx+paralaxDisplacement,disply,z);
+        gl.glScalef(scx, scy, 0);
         for (int i=0; i<lineNumber; i++){
             gl.glPushMatrix();
             for (int j = 0; j<lineSize; j++){
@@ -143,7 +146,7 @@ public class TileMap {
         //System.out.println("ctime: "+ctime+" lastParalaxDisplacement: "+lastParalaxDisplacement+" speed:"+speed);
         //System.out.println("Difference: "+(ctime-lastParalaxDisplacement));
         if ((ctime-lastParalaxDisplacement)>speed) {
-            paralaxDisplacement = paralaxDisplacement - 0.04f;
+            paralaxDisplacement = paralaxDisplacement - 0.005f;
             lastParalaxDisplacement=ctime;
             //System.out.println("decreasing displacement");
         }

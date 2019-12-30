@@ -7,8 +7,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLU;
+import java.nio.IntBuffer;
 
 import android.content.Context;
+
+import java.nio.IntBuffer;
+
+import static javax.microedition.khronos.opengles.GL11.GL_VIEWPORT;
 
 public class MyOpenGLRenderer implements Renderer {
 
@@ -18,6 +23,7 @@ public class MyOpenGLRenderer implements Renderer {
 	private TileMap tm1, tm2, tm3, tm4, tm5, tm6;
 	private AnimationManager am1, am2;
 	private int angle = 0;
+	private int viewportWidth, viewportHeight;
 
 	private Context context;
 
@@ -60,14 +66,14 @@ public class MyOpenGLRenderer implements Renderer {
 
 
 		am1 = new AnimationManager(gl, context, R.drawable.mario, R.raw.mario);
-		square2.setAnimation(am1.getAnimation("walk"));
+		square2.setAnimation(am1.getAnimation("run"));
 
 		tm1 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap1, 300);
-        tm2 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap1, 200f);
-        tm3 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap1, 150f);
-		tm4 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap2, 100f);
-        tm5 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap3, 50f);
-        tm6 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap4, 1f);
+        /*tm2 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap1, 200f);
+        //tm3 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap1, 150f);*/
+		tm4 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap2, 200f);
+        tm5 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap3, 60f);
+        tm6 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap4, 30f);
 		//am2 = new AnimationManager(gl, context, R.drawable.mario, R.raw.mario);
 		//square1.setAnimation(am2.getAnimation("walk"));
 
@@ -84,20 +90,27 @@ public class MyOpenGLRenderer implements Renderer {
 		
 		gl.glLoadIdentity();	
 
-		gl.glTranslatef(0.0f, 0.0f, -0.3f);
+		//gl.glTranslatef(0.0f, 0.0f, -0.3f);
+		//gl.glTranslatef(0.0f, 0.0f, 010f);
+
+		//System.out.println("Size: "+viewportWidth+"x"+viewportHeight);
 
 		tm1.update(System.currentTimeMillis());
-        tm1.draw(-20f, -9f, 9.2f);
-        tm2.update(System.currentTimeMillis());
+        //tm1.draw(-20f, -9f, 9.2f);
+		tm1.draw(0f, -1f, 0.8f, 0.2f, 0.2f);
+        /*tm2.update(System.currentTimeMillis());
         tm2.draw(-20f, -9f, 7.2f);
         tm3.update(System.currentTimeMillis());
-		tm3.draw(-20f, -9f, 5.2f);
-        tm4.update(System.currentTimeMillis());
-        tm4.draw(-20f, -8.05f, 3.2f);
-        tm5.update(System.currentTimeMillis());
-        tm5.draw(-20f, -8.05f, 0.2f);
-        tm6.update(System.currentTimeMillis());
-        tm6.draw(-20f, -8.05f, 0.2f);
+		tm3.draw(-20f, -9f, 5.2f);*/
+		tm4.update(System.currentTimeMillis());
+		tm4.draw(0f, -1f, 0.47f, 0.13f, 0.13f);
+		tm5.update(System.currentTimeMillis());
+		tm5.draw(0f, -1f, -0.09f, 0.17f, 0.17f);
+        //tm5.update(System.currentTimeMillis());
+        //tm5.draw(0f, -1f, 0.25f, 0.25f, 0.25f);
+
+		tm6.update(System.currentTimeMillis());
+		tm6.draw(0f, -1f, -0.09f, 0.17f, 0.17f);
 		// Green Square
 		gl.glPushMatrix();
 		int midAngle = angle % 200;
@@ -114,8 +127,8 @@ public class MyOpenGLRenderer implements Renderer {
 		// Red Square
 		gl.glPushMatrix();
 		//gl.glRotatef(angle, 0.0f, 0.0f, 1.0f);
-		//gl.glTranslatef(-0.5f, -0.5f, 0.0f);
-		gl.glScalef(-0.03f, 0.03f, 0.01f);
+		gl.glTranslatef(0f, -0.5f, 0.0f);
+		gl.glScalef(-0.15f, 0.15f, 0.01f);
 		//gl.glColor4f(1.0f, 0.0f, 0.0f, 0.0f);
 		square2.update(System.currentTimeMillis());
 		square2.draw(gl);
@@ -140,6 +153,8 @@ public class MyOpenGLRenderer implements Renderer {
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		// Define the Viewport
 		gl.glViewport(0, 0, width, height);
+		viewportWidth=width;
+		viewportHeight=height;
 		// Select the projection matrix
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		// Reset the projection matrix
@@ -147,8 +162,8 @@ public class MyOpenGLRenderer implements Renderer {
 		// Calculate the aspect ratio of the window
 
 		// TODO: set parallel perspective and have it working with it.
-		GLU.gluPerspective(gl, 60.0f, (float) width / (float) height, 0.1f, 100.0f);
-		//gl.glOrthof(0, width, 0, height, 0.1f, 100);
+		//GLU.gluPerspective(gl, 60.0f, (float) width / (float) height, 0.1f, 100.0f);
+		//gl.glOrthof(0, width, 0, height, 0.1f, 10);
 
 		// Select the modelview matrix
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
