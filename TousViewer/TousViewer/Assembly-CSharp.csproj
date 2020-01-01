@@ -57,6 +57,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\MyFunctions.cs" />
      <Compile Include="Assets\Scripts\ObjectRotateMouse.cs" />
+     <Compile Include="Assets\Scripts\QuitFunction.cs" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>/mnt/1814c93f-609b-4281-819a-1f3cfab40622/urv/01_Modelizacion_y_Visualizacion/Ejercicios/Modeling-Visualization/TousViewer/TousViewer/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>
