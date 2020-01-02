@@ -55,6 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\DropdownJewels.cs" />
      <Compile Include="Assets\Scripts\MyFunctions.cs" />
      <Compile Include="Assets\Scripts\ObjectRotateMouse.cs" />
      <Compile Include="Assets\Scripts\QuitFunction.cs" />

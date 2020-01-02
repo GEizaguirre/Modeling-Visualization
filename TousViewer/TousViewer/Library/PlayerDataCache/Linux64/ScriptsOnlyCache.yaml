@@ -1,20 +1,23 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
+    - DropdownJewels
     - ObjectRotateMouse
     - QuitFunction
-    UnityEditor.TestRunner.dll:
-    - UnityEditor.TestTools.TestRunner.TestListCacheData
     UnityEngine.UI.dll:
     - UnityEngine.EventSystems.EventSystem
     - UnityEngine.EventSystems.StandaloneInputModule
     - UnityEngine.UI.Button
     - UnityEngine.UI.CanvasScaler
+    - UnityEngine.UI.Dropdown
     - UnityEngine.UI.GraphicRaycaster
     - UnityEngine.UI.Image
+    - UnityEngine.UI.Mask
+    - UnityEngine.UI.ScrollRect
+    - UnityEngine.UI.Scrollbar
     - UnityEngine.UI.Text
+    - UnityEngine.UI.Toggle
     com.unity.multiplayer-hlapi.Runtime.dll:
-    - UnityEngine.Networking.NetworkCallbacks
     - UnityEngine.Networking.NetworkIdentity
   sceneClasses:
     Assets/Scenes/SampleScene.unity:
@@ -51,39 +54,51 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 9242}
-    - Class: 114
-      Script: {instanceID: 9294}
+      Script: {instanceID: 9244}
     - Class: 114
       Script: {instanceID: 9296}
     - Class: 114
-      Script: {instanceID: 9336}
+      Script: {instanceID: 9298}
     - Class: 114
-      Script: {instanceID: 9354}
+      Script: {instanceID: 9338}
     - Class: 114
-      Script: {instanceID: 9382}
+      Script: {instanceID: 9356}
     - Class: 114
       Script: {instanceID: 9384}
     - Class: 114
+      Script: {instanceID: 9386}
+    - Class: 114
       Script: {instanceID: 9390}
     - Class: 114
-      Script: {instanceID: 9396}
+      Script: {instanceID: 9392}
     - Class: 114
-      Script: {instanceID: 9404}
+      Script: {instanceID: 9398}
     - Class: 114
-      Script: {instanceID: 9440}
+      Script: {instanceID: 9406}
+    - Class: 114
+      Script: {instanceID: 9414}
+    - Class: 114
+      Script: {instanceID: 9432}
+    - Class: 114
+      Script: {instanceID: 9434}
     - Class: 114
       Script: {instanceID: 9442}
     - Class: 114
-      Script: {instanceID: 9670}
+      Script: {instanceID: 9444}
     - Class: 114
-      Script: {instanceID: 10092}
+      Script: {instanceID: 9446}
     - Class: 114
-      Script: {instanceID: 10370}
+      Script: {instanceID: 9672}
     - Class: 114
-      Script: {instanceID: 10396}
+      Script: {instanceID: 9880}
     - Class: 114
-      Script: {instanceID: 12668}
+      Script: {instanceID: 10096}
+    - Class: 114
+      Script: {instanceID: 10374}
+    - Class: 114
+      Script: {instanceID: 10400}
+    - Class: 114
+      Script: {instanceID: 10418}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -637,6 +652,12 @@ ScriptsOnlyBuild:
     className: ControlTrack
   - hash:
       serializedVersion: 2
+      Hash: 8af46fc65d907515e0ddc5206b4f5ba0
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: DropdownJewels
+  - hash:
+      serializedVersion: 2
       Hash: 265cf27ba050d55ff33a8acab4ded6c0
     assemblyName: com.unity.multiplayer-hlapi.Runtime.dll
     namespaceName: UnityEngine.Networking
@@ -781,6 +802,12 @@ ScriptsOnlyBuild:
     className: NetworkBehaviour
   - hash:
       serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: QuitFunction
+  - hash:
+      serializedVersion: 2
       Hash: ee0cef6caaac8ae485bfa82f000f0f7b
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
@@ -863,12 +890,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
-  - hash:
-      serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: QuitFunction
   platform: 24
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
