@@ -101,7 +101,7 @@ public class TileMap {
                             ((column+1)*tileWidth-1)/(float)width, ((row)*tileHeight)/(float)height,
                             ((column+1)*tileWidth-1)/(float)width, ((row+1)*tileHeight-1)/(float)height});
 
-                    System.out.print(tilemap[i][j]+" ");
+                    //System.out.print(tilemap[i][j]+" ");
                     float u1=column*tileWidth/(float)width;
                     float v1=((row+1)*tileHeight-1)/(float)(height);
                     float u2=column*tileWidth/(float)width;
@@ -111,10 +111,10 @@ public class TileMap {
                     float u4=((column+1)*tileWidth-1)/(float)width;
                     float v4=((row+1)*tileHeight-1)/(float)height;
 
-                    System.out.println("\n\t Coordinates: ("+ u1 +", "+v1+") - ("+
+                    /*System.out.println("\n\t Coordinates: ("+ u1 +", "+v1+") - ("+
                             u2 +", "+v2+") - ("+
                             u3 +"," + v3+") - ("+
-                            u4 +", "+v4+")");
+                            u4 +", "+v4+")");*/
                 }
             }
         } catch (java.io.IOException ioe) {

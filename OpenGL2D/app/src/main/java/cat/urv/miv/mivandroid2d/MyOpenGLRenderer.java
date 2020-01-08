@@ -10,6 +10,7 @@ import android.opengl.GLU;
 import java.nio.IntBuffer;
 
 import android.content.Context;
+import android.view.MotionEvent;
 
 import java.nio.IntBuffer;
 
@@ -17,44 +18,40 @@ import static javax.microedition.khronos.opengles.GL11.GL_VIEWPORT;
 
 public class MyOpenGLRenderer implements Renderer {
 
-	private Square square1, square2, square3;
-	private Texture texture1;
-	private TextureAtlas tAtlas;
-	private TileMap tm1, tm2, tm3, tm4, tm5, tm6;
-	private AnimationManager am1, am2;
-	private int angle = 0;
-	private int viewportWidth, viewportHeight;
+    private Square square1, mario_square, caveman_square;
+    private Texture texture1;
+    private TextureAtlas tAtlas;
+    private TileMap tm1, tm2, tm3, tm4, tm5, tm6;
+    private AnimationManager mario_character, caveman_character;
+    private int angle = 0;
+    private int viewportWidth, viewportHeight;
 
-	private Context context;
 
-	public MyOpenGLRenderer(Context context){
-		this.context = context;
-	}
+    private Context context;
 
-	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+    public MyOpenGLRenderer(Context context){
+        this.context = context;
+    }
 
-		// General openGL activation.
-		gl.glEnable(GL10.GL_TEXTURE_2D);
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 
-		// Image Background color
-		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);  
+        // General openGL activation.
+        gl.glEnable(GL10.GL_TEXTURE_2D);
 
-		//Create the objects
-		square1 = new Square();
-		//square1.setColor(new float[]{0.0f, 1.0f, 0.0f, 0.0f,
-		//							 0.0f, 0.0f, 0.0f, 0.0f,
-		//                             1.0f, 0.0f, 0.0f, 0.0f,
-		//							 0.0f, 0.0f, 1.0f,  0.0f});
+        // Image Background color
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
 
-		square2 = new Square();
-		square3 = new Square();
-		//square2.setColor(new float[]{0.0f, 0.0f, 1.0f,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-		//		0.0f, 0.0f, 1.0f,  0.0f,1.0f, 0.0f, 0.0f, 0.0f});
+        //Create the objects
+        square1 = new Square();
+
+        mario_square = new Square();
+        caveman_square = new Square();
+
 
 		/*tAtlas = new TextureAtlas(gl, context, R.drawable.caveman, R.raw.caveman);
 		texture1 = tAtlas.getTexture();
 		square2.setTexture(texture1, tAtlas.getCoords("run5"));*/
-		//for (float f: tAtlas.getCoords("run5")) System.out.println(f+" ");
+        //for (float f: tAtlas.getCoords("run5")) System.out.println(f+" ");
 		/*square2.setTexture(texture1, new float[] {
 				0.07421f, 1f,//B
 				0.07421f,0.4063f,//A
@@ -65,110 +62,109 @@ public class MyOpenGLRenderer implements Renderer {
 
 
 
-		am1 = new AnimationManager(gl, context, R.drawable.mario, R.raw.mario);
-		square2.setAnimation(am1.getAnimation("run"));
+        mario_character = new AnimationManager(gl, context, R.drawable.mario, R.raw.mario);
+        mario_square.setAnimation(mario_character.getAnimation("walk"));
 
-		tm1 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap1, 300);
+        caveman_character = new AnimationManager(gl, context, R.drawable.caveman, R.raw.caveman);
+        caveman_square.setAnimation(caveman_character.getAnimation("run"));
+
+        // TODO: implement a texture atlas (even if the rest works).
+        tm1 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap1, 300);
         /*tm2 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap1, 200f);
         //tm3 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap1, 150f);*/
-		tm4 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap2, 200f);
+        tm4 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap2, 200f);
         tm5 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap3, 60f);
         tm6 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap4, 30f);
-		//am2 = new AnimationManager(gl, context, R.drawable.mario, R.raw.mario);
-		//square1.setAnimation(am2.getAnimation("walk"));
 
 
 
-	}
+    }
 
 
-	@Override
-	public void onDrawFrame(GL10 gl) {
-		
-		// Clears the screen and depth buffer.
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);		
-		
-		gl.glLoadIdentity();	
+    @Override
+    public void onDrawFrame(GL10 gl) {
 
-		//gl.glTranslatef(0.0f, 0.0f, -0.3f);
-		//gl.glTranslatef(0.0f, 0.0f, 010f);
+        // Clears the screen and depth buffer.
+        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
-		//System.out.println("Size: "+viewportWidth+"x"+viewportHeight);
-
-		tm1.update(System.currentTimeMillis());
-        //tm1.draw(-20f, -9f, 9.2f);
-		tm1.draw(0f, -1f, 0.8f, 0.2f, 0.2f);
-        /*tm2.update(System.currentTimeMillis());
-        tm2.draw(-20f, -9f, 7.2f);
-        tm3.update(System.currentTimeMillis());
-		tm3.draw(-20f, -9f, 5.2f);*/
-		tm4.update(System.currentTimeMillis());
-		tm4.draw(0f, -1f, 0.47f, 0.13f, 0.13f);
-		tm5.update(System.currentTimeMillis());
-		tm5.draw(0f, -1f, -0.09f, 0.17f, 0.17f);
-        //tm5.update(System.currentTimeMillis());
-        //tm5.draw(0f, -1f, 0.25f, 0.25f, 0.25f);
-
-		tm6.update(System.currentTimeMillis());
-		tm6.draw(0f, -1f, -0.09f, 0.17f, 0.17f);
-		// Green Square
-		gl.glPushMatrix();
-		int midAngle = angle % 200;
-		if (midAngle > 100)
-			midAngle = 200 - midAngle;
-		//gl.glTranslatef(0.0f, 0.0f, midAngle * -0.1f);
-		//gl.glColor4f(0.0f, 1.0f, 0.0f, 0.0f);
-		//square1.update(System.currentTimeMillis());
-		//square1.draw(gl);
-		gl.glPopMatrix();
-
-		//gl.glRotatef(angle, 0.0f, 1.0f, 0.0f);
-
-		// Red Square
-		gl.glPushMatrix();
-		//gl.glRotatef(angle, 0.0f, 0.0f, 1.0f);
-		gl.glTranslatef(0f, -0.5f, 0.0f);
-		gl.glScalef(-0.15f, 0.15f, 0.01f);
-		//gl.glColor4f(1.0f, 0.0f, 0.0f, 0.0f);
-		square2.update(System.currentTimeMillis());
-		square2.draw(gl);
-		gl.glPopMatrix();
+        gl.glLoadIdentity();
 
 
+        tm1.update(System.currentTimeMillis());
+        tm1.draw(0f, -1f, 0.8f, 0.2f, 0.2f);
+        tm4.update(System.currentTimeMillis());
+        tm4.draw(0f, -1f, 0.47f, 0.13f, 0.13f);
+        tm5.update(System.currentTimeMillis());
+        tm5.draw(0f, -1f, -0.09f, 0.17f, 0.17f);
 
-		/*
-		// Blue Square
-		gl.glPushMatrix();
-		//gl.glRotatef(2.0f * angle, 0.0f, 0.0f, 1.0f);
-		gl.glTranslatef( 1.0f, 0.0f, 0.0f);
-		//gl.glColor4f(0.0f, 0.0f, 1.0f, 0.0f);
-		square3.update(System.currentTimeMillis());
-		square3.draw(gl);
-		gl.glPopMatrix();*/
-		
-		angle += 5.0f;
-	}
 
-	@Override
-	public void onSurfaceChanged(GL10 gl, int width, int height) {
-		// Define the Viewport
-		gl.glViewport(0, 0, width, height);
-		viewportWidth=width;
-		viewportHeight=height;
-		// Select the projection matrix
-		gl.glMatrixMode(GL10.GL_PROJECTION);
-		// Reset the projection matrix
-		gl.glLoadIdentity();
-		// Calculate the aspect ratio of the window
+        tm6.update(System.currentTimeMillis());
+        tm6.draw(0f, -1f, -0.09f, 0.17f, 0.17f);;
 
-		// TODO: set parallel perspective and have it working with it.
-		//GLU.gluPerspective(gl, 60.0f, (float) width / (float) height, 0.1f, 100.0f);
-		//gl.glOrthof(0, width, 0, height, 0.1f, 10);
+        // Red Square
+        gl.glPushMatrix();
 
-		// Select the modelview matrix
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
+        drawCharacters(gl);
+
+        gl.glPopMatrix();
+
+    }
+
+    float displacement = 0;
+
+    public void drawCharacters(GL10 gl) {
+
+        displacement += test_touches();
+        gl.glTranslatef(-0.4f+displacement, -0.5f, 0.0f);
+        gl.glScalef(-0.15f, 0.15f, 0.01f);
+        caveman_square.update(System.currentTimeMillis());
+        caveman_square.draw(gl);
+        gl.glTranslatef(-2f-displacement, 0, 0);
+        mario_square.update(System.currentTimeMillis());
+        mario_square.draw(gl);
+
+    }
+
+    private float touch_counter = 0;
+    private float lastupdate = System.nanoTime();
+    private final double speed = 1E8;
+
+    private float test_touches(){
+        float t = System.nanoTime();
+        //System.out.println(t);
+        if ((t-lastupdate)>=speed) {
+            lastupdate=t;
+            float rt = touch_counter/100;
+            touch_counter = 0;
+            System.out.println("Got "+rt);
+            return rt;
+        }
+        else return 0f;
+    }
+
+    public void incrementTouches(){
+
+        touch_counter++;
+        System.out.println("Touched! "+touch_counter+" touches");
+    }
+
+    @Override
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        // Define the Viewport
+        gl.glViewport(0, 0, width, height);
+        viewportWidth=width;
+        viewportHeight=height;
+        // Select the projection matrix
+        gl.glMatrixMode(GL10.GL_PROJECTION);
+        // Reset the projection matrix
+        gl.glLoadIdentity();
+        // Calculate the aspect ratio of the window
+
+
+        // Select the modelview matrix
+        gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
         gl.glEnable( GL10.GL_BLEND );
-	}
+    }
 
 }

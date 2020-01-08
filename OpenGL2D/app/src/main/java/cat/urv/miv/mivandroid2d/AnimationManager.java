@@ -39,12 +39,11 @@ public class AnimationManager {
          */
         //BitmapFactory.Options dim = new BitmapFactory.Options();
         //dim.inJustDecodeBounds = true;
-        Bitmap mBitmap = BitmapFactory.decodeResource(context.getResources(), image_id);
+        InputStream is = context.getResources().openRawResource(image_id);
+        Bitmap mBitmap = BitmapFactory.decodeStream(is);
         int height = mBitmap.getHeight();
         int width = mBitmap.getWidth();
 
-        //
-        // System.out.println(height + "x" + width);
         /* Read text file and create structure passing each images' coordinates
         to [0,1].
          */
@@ -62,32 +61,17 @@ public class AnimationManager {
                         //System.out.println("\nNEW "+parts[0]);
                     }
                     float[] coordinates = {
-                            Float.parseFloat(parts[2]) / width, 1 - (Float.parseFloat(parts[3])-1) / height, //B
-                            Float.parseFloat(parts[2]) / width, 1 - (Float.parseFloat(parts[5])+Float.parseFloat(parts[3])) / height, // A
-                            (Float.parseFloat(parts[2]) + Float.parseFloat(parts[4]) - 1) / width, 1 - (Float.parseFloat(parts[5])+Float.parseFloat(parts[3])) / height, //D
-                            (Float.parseFloat(parts[2]) + Float.parseFloat(parts[4]) - 1) / width, 1 - (Float.parseFloat(parts[3])-1) / height //C
+                            Float.parseFloat(parts[2]) / width, 1 - (Float.parseFloat(parts[3])) / height, //B
+                            Float.parseFloat(parts[2]) / width, 1 - (Float.parseFloat(parts[5]) + Float.parseFloat(parts[3])) / height, // A
+                            (Float.parseFloat(parts[2]) + Float.parseFloat(parts[4]) - 1) / width, 1 - (Float.parseFloat(parts[5]) + Float.parseFloat(parts[3])) / height, //D
+                            (Float.parseFloat(parts[2]) + Float.parseFloat(parts[4]) - 1) / width, 1 - (Float.parseFloat(parts[3])) / height //C
                     };
-                    /*System.out.print("Next coord :");
-                    for (Float f : coordinates){
-                        System.out.print(" "+f);
-                    }
-                    System.out.println();*/
+
                     animations.get(parts[0]).addFrame(coordinates);
-                    /*System.out.println(animations.get(parts[0]));*/
+
                 }
             }
-            /*for (String key: animations.keySet()){
-                System.out.println(animations.get(key));
-            }*/
-            /*for (String key:animations.keySet()){
-                System.out.println("\n"+key);
-                ArrayList<float[]> coors = animations.get(key).getFrames();
-                for (float[] c: coors){
-                    for (Float f : c){
-                        System.out.print(" "+f);
-                    }
-                }
-            }*/
+
         }
         catch (IOException e){
             System.out.println("Error reading atlas txt file");
@@ -97,5 +81,12 @@ public class AnimationManager {
 
     public Animation getAnimation(String name){
         return animations.get(name);
+    }
+
+    public void printCoordinates (float[] coordinates){
+        System.out.println("Coordinates: ");
+        for (int i=0; i<8; i=i+2){
+            System.out.println("("+coordinates[i]+", "+coordinates[i+1]+")");
+        }
     }
 }

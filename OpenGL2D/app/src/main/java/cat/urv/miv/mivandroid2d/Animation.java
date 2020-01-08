@@ -27,7 +27,6 @@ public class Animation {
     private long lastupdate;
     private Texture texture;
 
-    /* TODO: modify to have different animations with the same name*/
 
     public Animation  (GL10 gl, Context context, Texture text, String name, LOOP_TYPES l){
         this.gl = gl;
