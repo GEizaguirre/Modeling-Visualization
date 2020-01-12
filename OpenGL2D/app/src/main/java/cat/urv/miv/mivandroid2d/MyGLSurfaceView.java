@@ -15,13 +15,14 @@ public class MyGLSurfaceView extends GLSurfaceView {
     public boolean onTouchEvent(MotionEvent event) {
         if (event != null) {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
                 if (mRenderer != null) {
                     // Ensure we call switchMode() on the OpenGL thread.
                     // queueEvent() is a method of GLSurfaceView that will do this for us.
                     queueEvent(new Runnable() {
                         @Override
                         public void run() {
-                            mRenderer.incrementTouches();
+                            StateManager.incrementTouches();
                         }
                     });
                 }

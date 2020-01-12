@@ -1,10 +1,13 @@
-implement parallax when moving characters
+OK Arrives at end of tilemap
+OK implement parallax when moving characters
+OK add gradient of movement for more fluid animation
+OK increase speed of animation when touching
 implement HUD
-    CHASING MARIO
+    OK CHASING MARIO Simple -texture in pixelart
     the game about trying to chase a really chilled out Mario
     Number of times chased
         (Que pasado un tiempo se ponga a minus)
-adjust to different screens
+More or less: adjust to different screens
 button to restart counter
 music
 texture atlas

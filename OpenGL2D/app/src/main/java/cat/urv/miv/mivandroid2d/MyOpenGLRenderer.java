@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLU;
+
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import android.content.Context;
@@ -25,6 +27,8 @@ public class MyOpenGLRenderer implements Renderer {
     private AnimationManager mario_character, caveman_character;
     private int angle = 0;
     private int viewportWidth, viewportHeight;
+    private final float speed_scalation = 2;
+    private SimpleHUD hud;
 
 
     private Context context;
@@ -38,45 +42,23 @@ public class MyOpenGLRenderer implements Renderer {
         // General openGL activation.
         gl.glEnable(GL10.GL_TEXTURE_2D);
 
-        // Image Background color
-        gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
-
-        //Create the objects
-        square1 = new Square();
-
         mario_square = new Square();
         caveman_square = new Square();
-
-
-		/*tAtlas = new TextureAtlas(gl, context, R.drawable.caveman, R.raw.caveman);
-		texture1 = tAtlas.getTexture();
-		square2.setTexture(texture1, tAtlas.getCoords("run5"));*/
-        //for (float f: tAtlas.getCoords("run5")) System.out.println(f+" ");
-		/*square2.setTexture(texture1, new float[] {
-				0.07421f, 1f,//B
-				0.07421f,0.4063f,//A
-				0.1445f, 0.4063f,//D
-				0.1445f, 1f//C
-				});*/
-
-
-
 
         mario_character = new AnimationManager(gl, context, R.drawable.mario, R.raw.mario);
         mario_square.setAnimation(mario_character.getAnimation("walk"));
 
         caveman_character = new AnimationManager(gl, context, R.drawable.caveman, R.raw.caveman);
         caveman_square.setAnimation(caveman_character.getAnimation("run"));
+        caveman_square.getAnimation().activate_touches();
 
         // TODO: implement a texture atlas (even if the rest works).
-        tm1 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap1, 300);
-        /*tm2 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap1, 200f);
-        //tm3 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap1, 150f);*/
-        tm4 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap2, 200f);
-        tm5 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap3, 60f);
-        tm6 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap4, 30f);
+        tm1 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap1, 300/speed_scalation);
+        tm4 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap2, 200f/speed_scalation);
+        tm5 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap3, 150f/speed_scalation);
+        tm6 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap4, 30f/speed_scalation);
 
-
+        hud = new SimpleHUD(context, gl, R.drawable.mario_title);
 
     }
 
@@ -84,29 +66,35 @@ public class MyOpenGLRenderer implements Renderer {
     @Override
     public void onDrawFrame(GL10 gl) {
 
+        StateManager.update_touches();
         // Clears the screen and depth buffer.
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
         gl.glLoadIdentity();
 
+        // Background
+        tm1.setDimensions(-1f, 0.8f, 0.2f, 0.2f);
+        tm1.update(System.currentTimeMillis(), true);
+        tm1.draw(0f);
 
-        tm1.update(System.currentTimeMillis());
-        tm1.draw(0f, -1f, 0.8f, 0.2f, 0.2f);
-        tm4.update(System.currentTimeMillis());
-        tm4.draw(0f, -1f, 0.47f, 0.13f, 0.13f);
-        tm5.update(System.currentTimeMillis());
-        tm5.draw(0f, -1f, -0.09f, 0.17f, 0.17f);
+        tm4.setDimensions( -1f, 0.47f, 0.13f, 0.13f);
+        tm4.update(System.currentTimeMillis(), true);
+        tm4.draw(0f);
 
+        tm5.setDimensions( -1f, -0.09f, 0.17f, 0.17f);
+        tm5.update(System.currentTimeMillis(), true);
+        tm5.draw(0f);
 
-        tm6.update(System.currentTimeMillis());
-        tm6.draw(0f, -1f, -0.09f, 0.17f, 0.17f);;
+        tm6.setDimensions( -1f, -0.09f, 0.17f, 0.17f);
+        tm6.update(System.currentTimeMillis(), true);
+        tm6.draw(0f);
 
-        // Red Square
-        gl.glPushMatrix();
-
+        // Characters
         drawCharacters(gl);
 
-        gl.glPopMatrix();
+        // HUD
+        hud.draw(gl);
+
 
     }
 
@@ -114,38 +102,23 @@ public class MyOpenGLRenderer implements Renderer {
 
     public void drawCharacters(GL10 gl) {
 
-        displacement += test_touches();
-        gl.glTranslatef(-0.4f+displacement, -0.5f, 0.0f);
-        gl.glScalef(-0.15f, 0.15f, 0.01f);
+        gl.glPushMatrix();
+        displacement = 0;
+        //displacement += StateManager.getDisplacement();
+        gl.glTranslatef(-0.4f+displacement, -0.7f, 0.0f);
+        gl.glScalef(-0.3f, 0.3f, 0.01f);
+
         caveman_square.update(System.currentTimeMillis());
         caveman_square.draw(gl);
         gl.glTranslatef(-2f-displacement, 0, 0);
         mario_square.update(System.currentTimeMillis());
         mario_square.draw(gl);
+        gl.glPopMatrix();
 
     }
 
-    private float touch_counter = 0;
-    private float lastupdate = System.nanoTime();
-    private final double speed = 1E8;
+    public void drawHud (GL10 gl) {
 
-    private float test_touches(){
-        float t = System.nanoTime();
-        //System.out.println(t);
-        if ((t-lastupdate)>=speed) {
-            lastupdate=t;
-            float rt = touch_counter/100;
-            touch_counter = 0;
-            System.out.println("Got "+rt);
-            return rt;
-        }
-        else return 0f;
-    }
-
-    public void incrementTouches(){
-
-        touch_counter++;
-        System.out.println("Touched! "+touch_counter+" touches");
     }
 
     @Override

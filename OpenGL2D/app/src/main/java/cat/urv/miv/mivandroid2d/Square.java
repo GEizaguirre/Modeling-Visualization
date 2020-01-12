@@ -141,4 +141,7 @@ public class Square {
 
 	}
 
+	public Animation getAnimation() {
+		return animation;
+	}
 }

@@ -64,8 +64,17 @@ public class Animation {
         return frames.get(currentFrame);
     }
 
+    public float displacement_to_speed_factor = 1E4f;
+    public boolean touches_active = false;
+
+    public void activate_touches() {touches_active=true;}
+
+    public void supress_touches() {touches_active=false;}
+
     public void update(Long t){
-        if ((t-lastupdate)>=speed) {
+        if ((t-lastupdate)>=(touches_active
+                ?speed-StateManager.getDisplacement()*displacement_to_speed_factor
+                :speed)) {
             lastupdate=t;
             switch (loop){
                 case SWEPT: currentFrame = (currentFrame + 1)%numFrames; break;

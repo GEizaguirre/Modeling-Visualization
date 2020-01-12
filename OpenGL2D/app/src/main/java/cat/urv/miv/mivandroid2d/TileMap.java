@@ -102,14 +102,6 @@ public class TileMap {
                             ((column+1)*tileWidth-1)/(float)width, ((row+1)*tileHeight-1)/(float)height});
 
                     //System.out.print(tilemap[i][j]+" ");
-                    float u1=column*tileWidth/(float)width;
-                    float v1=((row+1)*tileHeight-1)/(float)(height);
-                    float u2=column*tileWidth/(float)width;
-                    float v2=((row)*tileHeight)/(float)height;
-                    float u3=((column+1)*tileWidth-1)/(float)width;
-                    float v3=((row)*tileHeight)/(float)height;
-                    float u4=((column+1)*tileWidth-1)/(float)width;
-                    float v4=((row+1)*tileHeight-1)/(float)height;
 
                     /*System.out.println("\n\t Coordinates: ("+ u1 +", "+v1+") - ("+
                             u2 +", "+v2+") - ("+
@@ -122,11 +114,32 @@ public class TileMap {
         }
     }
 
-    public void draw(float z, float displx, float disply, float scx, float scy){
+    private float dispTilex;
+    private float dispTiley;
+    float vwidth;
+    float scx;
+    float scy;
+    float displx;
+    float disply;
+    private float secondary_drawer_displacement = 1;
+
+    public void setDimensions(float displx, float disply, float scx, float scy){
+        this.scx = scx;
+        this.scy = scy;
+        this.displx = displx;
+        this.disply = disply;
+    }
+
+    public void draw(float z){
+        this.scx = scx;
+        this.scy = scy;
+        //System.out.println("Got "+scx+" and "+scy);
         int viewport[] = new int[4];
         gl.glGetIntegerv(GL11.GL_VIEWPORT, viewport, 0);
-        float dispTilex = tileWidth/(float)viewport[2];
-        float dispTiley = tileWidth/(float)viewport[3];
+        vwidth =viewport[2];
+        //dispTilex = tileWidth*scx/(float)viewport[2];
+        dispTilex = vwidth*scx;
+        dispTiley = tileWidth*scy/(float)viewport[3];
         gl.glPushMatrix();
         gl.glTranslatef(displx+paralaxDisplacement,disply,z);
         gl.glScalef(scx, scy, 0);
@@ -140,18 +153,67 @@ public class TileMap {
             gl.glTranslatef(0,-2,0);
         }
         gl.glPopMatrix();
+        if (secondary_drawer_displacement<0) {
+            gl.glPushMatrix();
+            gl.glTranslatef(displx+secondary_drawer_displacement,disply,z);
+            gl.glScalef(scx, scy, 0);
+            for (int i=0; i<lineNumber; i++){
+                gl.glPushMatrix();
+                for (int j = 0; j<lineSize; j++){
+                    tilemap[i][j].draw(gl);
+                    gl.glTranslatef(2, 0, 0) ;
+                }
+                gl.glPopMatrix();
+                gl.glTranslatef(0,-2,0);
+            }
+            gl.glPopMatrix();
+        }
+        if (secondary_drawer_displacement<-scx*lineSize*2) secondary_drawer_displacement=1;
     }
 
-    public void update(double ctime){
-        //System.out.println("ctime: "+ctime+" lastParalaxDisplacement: "+lastParalaxDisplacement+" speed:"+speed);
-        //System.out.println("Difference: "+(ctime-lastParalaxDisplacement));
-        if ((ctime-lastParalaxDisplacement)>speed) {
-            paralaxDisplacement = paralaxDisplacement - 0.005f;
-            lastParalaxDisplacement=ctime;
-            //System.out.println("decreasing displacement");
+    private float base_displacement = 0.0025f;
+
+    //private float base_displacement = 0.1f;
+    //private float base_displacement = 0f;
+
+    public void update(double ctime, boolean touches){
+
+        //System.out.println("Current displacement "+paralaxDisplacement+" and secondary displacement "+secondary_drawer_displacement);
+        // Uptdate only based in time
+        if (!touches) {
+            if ((ctime - lastParalaxDisplacement) > speed) {
+                paralaxDisplacement = paralaxDisplacement - base_displacement;
+                lastParalaxDisplacement = ctime;
+            }
+            if (paralaxDisplacement == -2 * lineSize) paralaxDisplacement = 0;
         }
-        if (paralaxDisplacement==-2*lineSize) paralaxDisplacement=0;
-        //System.out.println("paralaxDisplacement: "+paralaxDisplacement);
+        else {
+            float displacement = StateManager.getDisplacement();
+            //System.out.println(displacement+"displacement");
+            if ((ctime - lastParalaxDisplacement) > speed) {
+                float displacement_rate = base_displacement + displacement*50/(float)speed;
+                //System.out.println("Displacement rate: "+displacement_rate);
+                paralaxDisplacement = paralaxDisplacement - displacement_rate;
+                if (secondary_drawer_displacement<0) secondary_drawer_displacement = secondary_drawer_displacement - displacement_rate;
+                lastParalaxDisplacement = ctime;
+            }
+            else  {
+                float displacement_rate = displacement*50/(float)speed;
+                paralaxDisplacement = paralaxDisplacement - displacement_rate;
+                if (secondary_drawer_displacement<0) secondary_drawer_displacement = secondary_drawer_displacement - displacement_rate;
+            }
+            //System.out.println("yea limit "+(-(scx*lineSize*2f)+2f+scx));
+            /*if (paralaxDisplacement <= -scx*lineSize*2) paralaxDisplacement = 0;
+            System.out.println("displaced "+paralaxDisplacement);*/
+            if (paralaxDisplacement <= (-(scx*lineSize*2f)+2f+scx)) {
+                //System.out.println("Changing displacement");
+                //secondary_drawer_displacement = paralaxDisplacement;
+                //paralaxDisplacement = 2+scx;
+                secondary_drawer_displacement = -scx*lineSize*2f+2f+scx;
+                paralaxDisplacement = 2f+scx;
+            }
+        }
+
     }
 
 }
