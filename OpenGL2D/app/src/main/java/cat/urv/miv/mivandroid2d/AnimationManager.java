@@ -3,12 +3,10 @@ package cat.urv.miv.mivandroid2d;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -37,8 +35,6 @@ public class AnimationManager {
 
         /* Get the size of the image.
          */
-        //BitmapFactory.Options dim = new BitmapFactory.Options();
-        //dim.inJustDecodeBounds = true;
         InputStream is = context.getResources().openRawResource(image_id);
         Bitmap mBitmap = BitmapFactory.decodeStream(is);
         int height = mBitmap.getHeight();
@@ -58,7 +54,6 @@ public class AnimationManager {
                     // Add animation if it does not exist.
                     if (!animations.containsKey(parts[0])) {
                         animations.put(parts[0], new Animation(this.gl, this.context, this.texture, parts[0], LOOP_TYPES.SWEPT));
-                        //System.out.println("\nNEW "+parts[0]);
                     }
                     float[] coordinates = {
                             Float.parseFloat(parts[2]) / width, 1 - (Float.parseFloat(parts[3])) / height, //B
@@ -83,10 +78,4 @@ public class AnimationManager {
         return animations.get(name);
     }
 
-    public void printCoordinates (float[] coordinates){
-        System.out.println("Coordinates: ");
-        for (int i=0; i<8; i=i+2){
-            System.out.println("("+coordinates[i]+", "+coordinates[i+1]+")");
-        }
-    }
 }

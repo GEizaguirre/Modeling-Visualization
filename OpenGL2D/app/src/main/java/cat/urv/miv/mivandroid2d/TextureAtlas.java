@@ -3,13 +3,10 @@ package cat.urv.miv.mivandroid2d;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.Buffer;
 import java.util.HashMap;
 
 import javax.microedition.khronos.opengles.GL10;
