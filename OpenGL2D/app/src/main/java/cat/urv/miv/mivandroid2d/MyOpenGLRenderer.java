@@ -45,7 +45,7 @@ public class MyOpenGLRenderer implements Renderer {
         tm5 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap3, 150f/speed_scalation);
         tm6 = new TileMap (gl, context, R.drawable.background_tiles, R.raw.tilemap4, 30f/speed_scalation);
 
-        hud = new SimpleHUD(context, gl, R.drawable.mario_title, R.raw.font_for_myv, R.drawable.font_for_myv);
+        hud = new SimpleHUD(context, gl, R.drawable.mario_title, R.raw.font_white, R.drawable.font_white);
     }
 
 

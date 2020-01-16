@@ -1,4 +1,4 @@
-package cat.urv.miv.mivandroid2d;
+package cat.urv.miv.mivandroid3d;
 
 import android.content.Context;
 import android.util.Xml;
@@ -36,7 +36,7 @@ public class XMLBitmapFontManager {
 
         try {
             tFile.close();
-        } catch (java.io.IOException ioe) {
+        } catch (IOException ioe) {
             System.out.println("Error closing font file");
         }
         return null;
@@ -119,8 +119,6 @@ public class XMLBitmapFontManager {
                 entries_counter++;
                 FontData nfd = new FontData(ID, character, y, x, width, height);
                 entries.add(nfd);
-
-                System.out.println(nfd);
                 parser.nextTag();
                 parser.require(XmlPullParser.END_TAG, ns, "char");
             }

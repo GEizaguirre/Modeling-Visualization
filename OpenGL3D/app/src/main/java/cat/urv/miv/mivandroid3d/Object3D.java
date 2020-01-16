@@ -1,5 +1,7 @@
 package cat.urv.miv.mivandroid3d;
 
+import android.content.Context;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,8 +14,6 @@ import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
 import javax.microedition.khronos.opengles.GL10;
-
-import android.content.Context;
 
 public class Object3D {
 

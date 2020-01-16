@@ -9,8 +9,11 @@ public class MainActivity extends Activity {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         GLSurfaceView view = new GLSurfaceView(this);
+        //view.setEGLContextClientVersion(2);
         view.setRenderer(new MyOpenGLRenderer(this));
         setContentView(view);
     }
@@ -48,6 +51,18 @@ public class MainActivity extends Activity {
                     break;
                 case KeyEvent.KEYCODE_P:
                     CameraManager.pitch(CameraManager.ROTATE_ANGLE);
+                    break;
+                case KeyEvent.KEYCODE_C:
+                    CameraManager.switch_camera();
+                    break;
+                case KeyEvent.KEYCODE_H:
+                    CameraManager.inverse_yaw(CameraManager.ROTATE_ANGLE);
+                    break;
+                case KeyEvent.KEYCODE_L:
+                    CameraManager.inverse_pitch(CameraManager.ROTATE_ANGLE);
+                    break;
+                case KeyEvent.KEYCODE_F:
+                    CameraManager.inverse_roll(CameraManager.ROTATE_ANGLE);
                     break;
             }
             return true;

@@ -6,13 +6,14 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class CameraManager {
 
-    public static int MAX_NUM_CAMERAS = 1;
+    public static int MAX_NUM_CAMERAS = 2;
     public static int FIRST_CAMERA = 0;
-    public static float MOVE_SPEED = 0.05f;
-    public static float MOVE_FREQUENCY = 50f;
+    public static float MOVE_SPEED = 0.02f;
+    public static float MOVE_FREQUENCY = 20f;
     public static float ROTATE_ANGLE = 2f;
     private static Camera[] cameras;
     private static Camera current_camera;
+    private static int current_camera_number = FIRST_CAMERA;
     private static boolean started_cameras = false;
 
     public static void start(GL10 gl) {
@@ -20,6 +21,14 @@ public class CameraManager {
         for (int i=0; i<MAX_NUM_CAMERAS; i++) cameras[i] = new Camera(gl);
         current_camera = cameras[FIRST_CAMERA];
         started_cameras = true;
+
+
+    }
+
+    public static int switch_camera(){
+        current_camera_number = (current_camera_number + 1)%MAX_NUM_CAMERAS;
+        current_camera = cameras[current_camera_number];
+        return current_camera_number;
     }
 
     public static void moveLeft(float inc) {
@@ -58,9 +67,20 @@ public class CameraManager {
 
     }
 
+    public static void inverse_yaw(float angle) {
+        if (started_cameras)
+            current_camera.inverse_yaw(angle);
+
+    }
+
     public static void pitch(float angle) {
         if (started_cameras)
             current_camera.pitch(angle);
+    }
+
+    public static void inverse_pitch(float angle) {
+        if (started_cameras)
+            current_camera.inverse_pitch(angle);
     }
 
     public static void roll(float angle) {
@@ -68,6 +88,14 @@ public class CameraManager {
             current_camera.roll(angle);
     }
 
+    public static void inverse_roll(float angle) {
+        if (started_cameras)
+            current_camera.inverse_roll(angle);
+    }
+
+    public static int getCurrent_camera_number() {
+        return current_camera_number;
+    }
 
     public static void look()
     {

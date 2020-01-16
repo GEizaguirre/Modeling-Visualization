@@ -50,15 +50,24 @@ public class Camera {
 	}
 	
 	public void yaw(float angle) {
-	    rotate(angle, up.get(0), up.get(1), up.get(2));
+	    rotate(-angle, up.get(0), up.get(1), up.get(2));
+	}
+	public void inverse_yaw(float angle) {
+		rotate(angle, up.get(0), up.get(1), up.get(2));
 	}
 	
 	public void pitch(float angle) {
         rotate(angle, side.get(0), side.get(1), side.get(2));
 	}
+	public void inverse_pitch(float angle) {
+		rotate(-angle, side.get(0), side.get(1), side.get(2));
+	}
 	
 	public void roll(float angle) {
         rotate(angle, forward.get(0), forward.get(1), forward.get(2));
+	}
+	public void inverse_roll(float angle) {
+		rotate(-angle, forward.get(0), forward.get(1), forward.get(2));
 	}
 
     private Vertex4 mulVectorMatrix (Vertex4 vector, float[][] matrix) {
