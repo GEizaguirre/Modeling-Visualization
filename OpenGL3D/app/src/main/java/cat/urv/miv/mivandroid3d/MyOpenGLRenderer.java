@@ -3,19 +3,14 @@ package cat.urv.miv.mivandroid3d;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
-import javax.microedition.khronos.opengles.GL11Ext;
 
 import android.content.Context;
-import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLU;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
 
 
 public class MyOpenGLRenderer implements Renderer {
@@ -29,8 +24,9 @@ public class MyOpenGLRenderer implements Renderer {
 	private FloatBuffer fog_color;
 	private ByteBuffer auxiliary;
 	private Vertex4 light_position;
-	private GL11 gl11;
+	private GL10 gl;
 	private SkyBox mySkyBox;
+	private ParticleSystem PS;
 
 
 	public MyOpenGLRenderer(Context context){
@@ -38,6 +34,8 @@ public class MyOpenGLRenderer implements Renderer {
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+
+		this.gl = gl;
 
 		// Image Background color
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
@@ -53,9 +51,7 @@ public class MyOpenGLRenderer implements Renderer {
 		//Enable Lights
 		gl.glEnable(GL10.GL_LIGHTING);
 
-
 		// Fog
-
 		gl.glFogf(GL10.GL_FOG_MODE, GL10.GL_EXP);
 		auxiliary = ByteBuffer.allocateDirect(4*4);
 		auxiliary.order(ByteOrder.nativeOrder());
@@ -66,7 +62,7 @@ public class MyOpenGLRenderer implements Renderer {
 		gl.glFogf(GL10.GL_FOG_DENSITY, 0.3f);
 		gl.glFogf(GL10.GL_FOG_START, 1f);
 		gl.glFogf(GL10.GL_FOG_END, 100f);
-		gl.glEnable(GL10.GL_FOG);
+		//gl.glEnable(GL10.GL_FOG);
 
 
 		// Camera
@@ -85,7 +81,7 @@ public class MyOpenGLRenderer implements Renderer {
 
 		// Positional light
 		l2 = new Light(gl, GL10.GL_LIGHT1);
-		//l2.enable();
+		l2.enable();
 		light_position = new Vertex4();
 		light_position.set(0, 1.5f);
 		light_position.set(1, 0.5f);
@@ -102,6 +98,13 @@ public class MyOpenGLRenderer implements Renderer {
 		// Set camera counter HUD
 		camera_info = new FontAtlas(context, gl, R.raw.font_for_myv, R.drawable.font_for_myv);
 
+		// Set particle system
+		PS = new ParticleSystem(gl, context, R.drawable.blood_particle);
+
+		// Start functionality switcher
+		StateManager.start(this, PS);
+		if (!StateManager.dlight_enabled) l2.disable();
+		if (!StateManager.fog_enabled) gl.glDisable(GL10.GL_FOG);
 	}
 
 	public void prepare_skybox(GL11 gl, Context context){
@@ -125,13 +128,12 @@ public class MyOpenGLRenderer implements Renderer {
 
 	public void onDrawFrame(GL10 gl) {
 
+		manageState(gl);
 
         // Clears the screen and depth buffer.
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
-
 		gl.glLoadIdentity();
-
 
 		// Camara set up
 		CameraManager.look();
@@ -139,13 +141,11 @@ public class MyOpenGLRenderer implements Renderer {
 		// Skybox
 		gl.glPushMatrix();
 		gl.glScalef(10, 10, 10);
-		mySkyBox.drawSkybox(gl);
+		if (StateManager.skybox_enabled) mySkyBox.drawSkybox(gl);
 		gl.glPopMatrix();
 
-
-
 		gl.glPushMatrix();
-		//Draw the sphere
+		// Draw models
 
 		gl.glTranslatef(-1.5f,0,-4.0f);
 		gl.glScalef(0.5f, 0.5f, 0.5f);
@@ -166,7 +166,9 @@ public class MyOpenGLRenderer implements Renderer {
 		monkey.draw(gl);
 		gl.glPopMatrix();
 
-		l2.setPosition(new float[] {light_position.get(0), light_position.get(1), light_position.get(2), light_position.get(3)});
+		if (StateManager.dlight_enabled) l2.setPosition(new float[] {light_position.get(0), light_position.get(1), light_position.get(2), light_position.get(3)});
+
+		if (StateManager.ps_enabled) drawParticles(gl);
 
 		drawHud(gl);
 
@@ -181,13 +183,48 @@ public class MyOpenGLRenderer implements Renderer {
 
 	}
 
+	public void manageState(GL10 gl) {
+		if (StateManager.switch_fog) {
+			if (StateManager.fog_enabled) gl.glEnable(GL10.GL_FOG);
+			else gl.glDisable(GL10.GL_FOG);
+			StateManager.switch_fog = false;
+		}
+		if (StateManager.switch_dlight) {
+			if (StateManager.dlight_enabled) l2.enable();
+			else l2.disable();
+			StateManager.switch_dlight = false;
+		}
+	}
+
 	public void drawHud(GL10 gl){
 		// Camera info
 		gl.glPushMatrix();
+		// Lightning must be provisionally disable for correct blending.
 		gl.glDisable(GL10.GL_LIGHTING);
 		gl.glLoadIdentity();
-		gl.glTranslatef(-0.035f, -0.05f, -0.1f);
-		camera_info.drawString("CAMERA:"+CameraManager.getCurrent_camera_number(), 0.002f, 0.002f);
+		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		gl.glScalef(0.002f, 0.002f, 1f);
+		gl.glTranslatef(-20f, 27f, -0.1f);
+		camera_info.drawString("CAMERA NUM "+CameraManager.getCurrent_camera_number(), 1f, 1f);
+		gl.glTranslatef(0f, -2f, 0f);
+		camera_info.drawString("FOG "+(StateManager.fog_enabled?"SET":"UNSET"), 1f, 1f);
+		gl.glTranslatef(0f, -2f, 0f);
+		camera_info.drawString("MOBILE LIGHT "+(StateManager.dlight_enabled?"SET":"UNSET"), 1f, 1f);
+		gl.glTranslatef(0f, -2f, 0f);
+		camera_info.drawString("SKYBOX "+(StateManager.skybox_enabled?"SET":"UNSET"), 1f, 1f);
+		gl.glTranslatef(0f, -2f, 0f);
+		camera_info.drawString("PART SYSTEM "+(StateManager.ps_enabled?"SET":"UNSET"), 1f, 1f);
+		gl.glEnable(GL10.GL_LIGHTING);
+		gl.glPopMatrix();
+	}
+
+	public void drawParticles(GL10 gl){
+		// Particles system info
+		gl.glPushMatrix();
+		gl.glDisable(GL10.GL_LIGHTING);
+		gl.glTranslatef(-0.75f, -0.75f, 0);
+		gl.glScalef(0.05f, 0.05f, 1);
+		PS.update(gl);
 		gl.glEnable(GL10.GL_LIGHTING);
 		gl.glPopMatrix();
 	}

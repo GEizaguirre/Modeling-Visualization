@@ -13,7 +13,6 @@ public class MainActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         GLSurfaceView view = new GLSurfaceView(this);
-        //view.setEGLContextClientVersion(2);
         view.setRenderer(new MyOpenGLRenderer(this));
         setContentView(view);
     }
@@ -63,6 +62,18 @@ public class MainActivity extends Activity {
                     break;
                 case KeyEvent.KEYCODE_F:
                     CameraManager.inverse_roll(CameraManager.ROTATE_ANGLE);
+                    break;
+                case KeyEvent.KEYCODE_1:
+                    StateManager.switchFog();
+                    break;
+                case KeyEvent.KEYCODE_2:
+                    StateManager.switchDLight();
+                    break;
+                case KeyEvent.KEYCODE_3:
+                    StateManager.switchSkybox();
+                    break;
+                case KeyEvent.KEYCODE_4:
+                    StateManager.switchPS();
                     break;
             }
             return true;

@@ -1,9 +1,11 @@
 package cat.urv.miv.mivandroid3d;
 
-import android.opengl.GLU;
-
 import javax.microedition.khronos.opengles.GL10;
 
+/*
+Global camera manager, makes transitions between
+MainActivity and Renderer.
+ */
 public class CameraManager {
 
     public static int MAX_NUM_CAMERAS = 2;
