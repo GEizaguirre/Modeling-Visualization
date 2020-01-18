@@ -30,7 +30,7 @@ public class MyOpenGLRenderer implements Renderer {
 	private ByteBuffer auxiliary;
 	private Vertex4 light_position;
 	private GL11 gl11;
-	private int[] textures=new int[1];
+	private SkyBox mySkyBox;
 
 
 	public MyOpenGLRenderer(Context context){
@@ -38,11 +38,6 @@ public class MyOpenGLRenderer implements Renderer {
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-
-
-		gl11 = (GL11) gl;
-		gl.glGenTextures(1, textures, 0);
-		gl.glBindTexture(GLES20.GL_TEXTURE_CUBE_MAP, textures[0]);
 
 		// Image Background color
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
@@ -60,17 +55,18 @@ public class MyOpenGLRenderer implements Renderer {
 
 
 		// Fog
-		gl.glEnable(GL10.GL_FOG);
-		gl.glFogf(GL10.GL_FOG_MODE, GL10.GL_EXP2);
+
+		gl.glFogf(GL10.GL_FOG_MODE, GL10.GL_EXP);
 		auxiliary = ByteBuffer.allocateDirect(4*4);
 		auxiliary.order(ByteOrder.nativeOrder());
 		fog_color = auxiliary.asFloatBuffer();
 		fog_color.put(new float[] {0.0f, 0.0f, 0.0f, 1.0f});
 		fog_color.position(0);
 		gl.glFogfv(GL10.GL_FOG_COLOR, fog_color);
-		gl.glFogf(GL10.GL_FOG_DENSITY, 0.26f);
-		gl.glFogf(GL10.GL_FOG_START, 0.3f);
-		gl.glFogf(GL10.GL_FOG_END, 100.0f);
+		gl.glFogf(GL10.GL_FOG_DENSITY, 0.3f);
+		gl.glFogf(GL10.GL_FOG_START, 1f);
+		gl.glFogf(GL10.GL_FOG_END, 100f);
+		gl.glEnable(GL10.GL_FOG);
 
 
 		// Camera
@@ -82,16 +78,14 @@ public class MyOpenGLRenderer implements Renderer {
 
         // Directional light
 		l1 = new Light(gl, GL10.GL_LIGHT0);
-		System.out.println("Setting light");
 		l1.enable();
-		l1.setPosition(new float[] {1.0f, -1.0f, 4.0f, 0.0f});
-		l1.setAmbientColor(new float[] {0.8f, 0.0f, 0.0f});
-		l1.setDiffuseColor(new float[] {0.8f, 0.0f, 0.0f});
+		l1.setPosition(new float[] {1.0f, -1.0f, 0.0f, 0.0f});
+		l1.setAmbientColor(new float[] {0.5f, 0.5f, 0.5f});
+		l1.setDiffuseColor(new float[] {0.5f, 0.5f, 0.5f});
 
 		// Positional light
 		l2 = new Light(gl, GL10.GL_LIGHT1);
-		System.out.println("Setting light");
-		l2.enable();
+		//l2.enable();
 		light_position = new Vertex4();
 		light_position.set(0, 1.5f);
 		light_position.set(1, 0.5f);
@@ -103,8 +97,23 @@ public class MyOpenGLRenderer implements Renderer {
 
 		gl_start = System.currentTimeMillis();
 
+		prepare_skybox((GL11) gl, context);
+
 		// Set camera counter HUD
 		camera_info = new FontAtlas(context, gl, R.raw.font_for_myv, R.drawable.font_for_myv);
+
+	}
+
+	public void prepare_skybox(GL11 gl, Context context){
+		int[] skybox_textures = new int[6];
+		skybox_textures[0] = R.drawable.posx;
+		skybox_textures[1] = R.drawable.negx;
+		skybox_textures[2] = R.drawable.posy;
+		skybox_textures[3] = R.drawable.negy;
+		skybox_textures[4] = R.drawable.posz;
+		skybox_textures[5] = R.drawable.negz;
+		mySkyBox = new SkyBox();
+		mySkyBox.load_skybox(gl, context, skybox_textures);
 
 	}
 
@@ -123,19 +132,29 @@ public class MyOpenGLRenderer implements Renderer {
 
 		gl.glLoadIdentity();
 
+
 		// Camara set up
 		CameraManager.look();
 
+		// Skybox
+		gl.glPushMatrix();
+		gl.glScalef(10, 10, 10);
+		mySkyBox.drawSkybox(gl);
+		gl.glPopMatrix();
+
+
+
 		gl.glPushMatrix();
 		//Draw the sphere
-		gl.glScalef(0.5f, 0.5f, 1f);
-		gl.glTranslatef(-2,0,-7.0f);
+
+		gl.glTranslatef(-1.5f,0,-4.0f);
+		gl.glScalef(0.5f, 0.5f, 0.5f);
 		sphere.draw(gl);
 		gl.glPopMatrix();
 
 		gl.glPushMatrix();
 
-		gl.glTranslatef(scale_factor,1,-7.5f);
+		gl.glTranslatef(scale_factor,1,-4.5f);
 		gl.glScalef(0.2f, 0.2f, 0.2f);
 		gl.glRotatef(90, 0, 1, 0);
 		pig.draw(gl);
@@ -143,7 +162,7 @@ public class MyOpenGLRenderer implements Renderer {
 
 		gl.glPushMatrix();
 		gl.glScalef(scale_factor, scale_factor, 1);
-		gl.glTranslatef(1,0,-4.5f);
+		gl.glTranslatef(1,0,-3.5f);
 		monkey.draw(gl);
 		gl.glPopMatrix();
 
@@ -159,7 +178,6 @@ public class MyOpenGLRenderer implements Renderer {
 		if (current_y>-0.1) y_sum=-y_sum;
 		if (current_y<-7) y_sum=-y_sum;
 		light_position.set(3, current_y);
-		//System.out.println(light_position);
 
 	}
 
