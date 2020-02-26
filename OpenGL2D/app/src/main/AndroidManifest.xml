@@ -1,0 +1,21 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cat.urv.miv.mivandroid2d">
+
+
+    <application
+        android:icon="@mipmap/ic_launcher"
+        android:label="MarioChaser: The Game"
+        android:allowBackup="true">
+        <activity
+            android:name="cat.urv.miv.mivandroid2d.MainActivity"
+            android:label="MarioChaser: The Game" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+
