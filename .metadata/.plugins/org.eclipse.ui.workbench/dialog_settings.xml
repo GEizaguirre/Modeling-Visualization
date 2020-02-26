@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.internal.QuickAccess">
+		<item key="dialogHeight" value="948"/>
+		<item key="dialogWidth" value="1115"/>
+		<list key="orderedElements">
+			<item value="search.in.help"/>
+		</list>
+		<list key="orderedProviders">
+			<item value="org.eclipse.ui.actions"/>
+		</list>
+		<list key="textEntries">
+			<item value="1"/>
+		</list>
+		<list key="textArray">
+			<item value="first"/>
+		</list>
+	</section>
+	<section name="WorkbenchPreferenceDialogSettings">
+		<item key="DIALOG_X_ORIGIN" value="315"/>
+		<item key="DIALOG_Y_ORIGIN" value="157"/>
+	</section>
+</section>

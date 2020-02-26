@@ -16,7 +16,7 @@ import java.nio.FloatBuffer;
 public class MyOpenGLRenderer implements Renderer {
 
 	private Context context;
-	private Object3D sphere, monkey, pig;
+	private Object3D sphere, monkey, pig, rock, gun;
 	private Camera cam;
 	private Light l1, l2, l3;
 	private float gl_start;
@@ -71,6 +71,8 @@ public class MyOpenGLRenderer implements Renderer {
         sphere = new Object3D(context, R.raw.earth);
         monkey = new Object3D(context, R.raw.monkey);
         pig = new Object3D(context, R.raw.pig);
+        rock = new Object3D(context, R.raw.rock_3);
+        gun = new Object3D(context, R.raw.sierp);
 
         // Directional light
 		l1 = new Light(gl, GL10.GL_LIGHT0);
@@ -147,7 +149,15 @@ public class MyOpenGLRenderer implements Renderer {
 		gl.glPushMatrix();
 		// Draw models
 
-		gl.glTranslatef(-1.5f,0,-4.0f);
+		gl.glTranslatef(-1.5f,0,-7.0f);
+		gl.glScalef(0.5f, 0.5f, 0.5f);
+		sphere.draw(gl);
+		gl.glPopMatrix();
+
+
+		gl.glPushMatrix();
+
+		gl.glTranslatef(1.5f,0,-7.0f);
 		gl.glScalef(0.5f, 0.5f, 0.5f);
 		sphere.draw(gl);
 		gl.glPopMatrix();
@@ -165,6 +175,17 @@ public class MyOpenGLRenderer implements Renderer {
 		gl.glTranslatef(1,0,-3.5f);
 		monkey.draw(gl);
 		gl.glPopMatrix();
+
+		gl.glPushMatrix();
+		gl.glTranslatef(0.5f,0,-9f);
+		gl.glScalef(0.05f, 0.05f, 0.05f);
+		//gl.glRotatef(90, 0, 1, 0);
+		gl.glRotatef(90, 1, 0, 0);
+
+		gun.draw(gl);
+		gl.glPopMatrix();
+
+		drawRockCorridor();
 
 		if (StateManager.dlight_enabled) l2.setPosition(new float[] {light_position.get(0), light_position.get(1), light_position.get(2), light_position.get(3)});
 
@@ -194,6 +215,69 @@ public class MyOpenGLRenderer implements Renderer {
 			else l2.disable();
 			StateManager.switch_dlight = false;
 		}
+	}
+
+	public void drawRockCorridor(){
+		gl.glPushMatrix();
+		gl.glScalef(2, 2, 2);
+		gl.glTranslatef(2f,0,-3.5f);
+		rock.draw(gl);
+		gl.glPopMatrix();
+
+		gl.glPushMatrix();
+		gl.glScalef(2, 2, 2);
+		gl.glTranslatef(2f,0,-1.5f);
+		rock.draw(gl);
+		gl.glPopMatrix();
+
+		gl.glPushMatrix();
+		gl.glScalef(2, 2, 2);
+		gl.glTranslatef(-2f,0,-3.5f);
+		rock.draw(gl);
+		gl.glPopMatrix();
+
+		gl.glPushMatrix();
+		gl.glScalef(2, 2, 2);
+		gl.glTranslatef(-2f,0,-1.5f);
+		rock.draw(gl);
+		gl.glPopMatrix();
+
+		gl.glPushMatrix();
+		gl.glScalef(2, 2, 2);
+		gl.glTranslatef(2f,0,0f);
+		rock.draw(gl);
+		gl.glPopMatrix();
+
+		gl.glPushMatrix();
+		gl.glScalef(2, 2, 2);
+		gl.glTranslatef(-2f,0,0f);
+		rock.draw(gl);
+		gl.glPopMatrix();
+
+		gl.glPushMatrix();
+		gl.glScalef(2, 2, 2);
+		gl.glTranslatef(2f,0,1.5f);
+		rock.draw(gl);
+		gl.glPopMatrix();
+
+		gl.glPushMatrix();
+		gl.glScalef(2, 2, 2);
+		gl.glTranslatef(-2f,0,1.5f);
+		rock.draw(gl);
+		gl.glPopMatrix();
+
+		gl.glPushMatrix();
+		gl.glScalef(2, 2, 2);
+		gl.glTranslatef(0f,0,3f);
+		rock.draw(gl);
+		gl.glPopMatrix();
+
+		gl.glPushMatrix();
+		gl.glScalef(2, 2, 2);
+		gl.glTranslatef(-2f,0,1.5f);
+		rock.draw(gl);
+		gl.glPopMatrix();
+
 	}
 
 	public void drawHud(GL10 gl){

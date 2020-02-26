@@ -1,0 +1,4 @@
+INDEX VERSION 1.131+/media/german/1814c93f-609b-4281-819a-1f3cfab40622/urv/01_Modelizacion_y_Visualizacion/Ejercicios/Modeling-Visualization/.metadata/.plugins/org.eclipse.jdt.core
+56512490.index
+1911889873.index
+646308851.index
